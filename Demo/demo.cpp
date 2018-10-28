@@ -6,63 +6,61 @@
 #include "sort.h"
 
 
-
-void print_vec(std::vector<int>& tmp){
-  for(int i=0;i<tmp.size();++i){
-    std::cout<<tmp[i]<<",";
+void sort(std::vector<int>& vec, std::string& method, int k){
+  if(method=="quicksort"){
+    std::cout<<"qsort"<<std::endl;
+    quicksort<int>(&vec[0], 0, vec.size()-1);
+  }else if(method=="mergesort"){
+    std::cout<<"mergesort"<<std::endl;
+    std::vector<int> tmp(vec.size(), -1);
+    mergesort<int>(&vec[0], &tmp[0], 0, vec.size());
+  }else if(method=="countsort"){
+    std::cout<<"countsort"<<std::endl;
+    std::vector<int> tmp(vec.size(), -1);
+    std::vector<int> count(k, 0);
+    countsort<int>(&vec[0], &tmp[0], &count[0], k, vec.size());
+  }else if(method=="radixsort"){
+    std::cout<<"radixsort"<<std::endl;
+    radixsort(&vec[0], vec.size());
   }
-  std::cout<<std::endl;
 }
 
 int main(int argc, char* argv[]){
   srand(0);
   std::cout<<"Sort Demo"<<std::endl;
 
+  int k = 100;
+  int array_size = 10;
+  std::string method = "radixsort";
+  if(argc > 1)
+    array_size = atoi(argv[1]);
+  if(argc > 2)
+    k = atoi(argv[2]);
+  if(argc > 3)
+    method = argv[3];
 
-  /* interesting example
-  std::vector<int> vec;
-  vec.push_back(20);
-  vec.push_back(23);
-  vec.push_back(7);
-  vec.push_back(37);
-  vec.push_back(3);
-  //quicksort<int>(&vec[0], 0, vec.size()-1);
- */
+  // initialize array
+  std::vector<int> vec(array_size);         
+  fill_rand_vec<int>(&vec[0], vec.size(), k);
+  std::vector<int> cpy(array_size);
+  std::memcpy(&cpy[0], &vec[0], vec.size()*4);
   
-
-
-  int array_size = atoi(argv[1]);
-  clock_t t;
-
-  std::vector<char> vec(array_size);         
-  fill_rand_vec<char>(&vec[0], vec.size(), 100);
-
-  // std::cout<<"unordered: "<<std::endl;
-  // print_vec(vec);
-  t = clock();
-  quicksort<char>(&vec[0], 0, vec.size()-1);
+  clock_t t = clock();
+  sort(vec, method, k);
   t = clock() - t;
   float runtime = ((float)t)/CLOCKS_PER_SEC;
-  float mevs = (float)array_size/runtime;
+  float mevs = (float)array_size/runtime/1000000; 
 
-  if( !is_sorted<char>(&vec[0], vec.size())){
+  if( !is_sorted<int>(&vec[0], vec.size())){
     std::cout<<"FAIL"<<std::endl;
-    exit(0);
+
+    int show_size = std::max((int)vec.size(), 100);
+    std::string msg1("unordered");
+    std::string msg2("ordered");
+    print_vec_wrapp<int>(msg1, &cpy[0], show_size);
+    print_vec_wrapp<int>(msg2, &vec[0], show_size);
+
   }else{
     std::cout<<"SUCCESS - Mev/s: "<<mevs<<std::endl;
-  } 
-
-
-  // Comparison with std::sort!
-
-  /* fill_rand_vec<int>(vec, vec.size(), 100);
-  t = clock();
-  quicksort(&vec[0], 0, vec.size()-1);
-  t = clock() - t;
-  runtime = ((float)t)/CLOCKS_PER_SEC;
-  mevs = (float)array_size/runtime;
-
-  std::cout<<"STD::SORT - Mev/s: "<<mevs<<std::endl; */
-
-
+  }    
 }

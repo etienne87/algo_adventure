@@ -1,20 +1,31 @@
 #include <iostream>
 #include <cstdlib> 
+#include <cstring>
+#include <functional>
 
 template<class T>
 void fill_rand_vec(T* array, int size, T maximum=100){
-  for(int i=0;i<size;++i){
-    array[i] = rand()%maximum;
-  }
+    for(int i=0;i<size;++i){
+        array[i] = rand()%maximum;
+    }
 }
 
 template<class T>
 void print_vec(T* array, int size){
-  std::cout<<"[";
-  for(int i=0;i<size-1;++i){
-    std::cout<<array[i]<<",";
-  }
-  std::cout<<array[size-1]<<"] ";
+    std::cout<<"[";
+    for(int i=0;i<size;++i){
+        std::cout<<array[i];
+        if(i < size-1)
+            std::cout<<",";
+    }
+    std::cout<<"] ";
+}
+
+template<class T>
+void print_vec_wrapp(std::string& msg, T* array, int size){
+    std::cout<<msg<<" ";
+    print_vec(array, size);
+    std::cout<<std::endl;
 }
 
 template<class T>
@@ -58,12 +69,80 @@ void quicksort(T* array, int left, int right){
 }
 
 template<class T>
+void merge(T* array, T* helper, int left, int middle, int right){
+    for(int i=left;i<right;i++)
+        helper[i] = array[i]; 
+
+    int index = left;
+    int l = left;
+    int r = middle;
+    while(l < middle && r < right){
+        if(helper[l] <= helper[r]){
+            array[index++] = helper[l];
+            l++;
+        }else{
+            array[index++] = helper[r];
+            r++;
+        }
+    }
+    // copy remaining left, right is already correctly placed
+    for(int i=l;i<middle;i++)
+        array[index++] = helper[i];
+} 
+
+template<class T>
 void mergesort(T* array, T* helper, int left, int right){
-    if(left < right){
-        int middle = (left+right)/2
+    if(left < right-1){
+        int middle = (left + right)/2;
         mergesort(array, helper, left, middle);
-        mergesort(array, helper, middle+1, right);
-        merge(array, helper, left, middle, right);
+        mergesort(array, helper, middle, right);
+        merge(array, helper, left, middle, right); 
     }
 }
 
+template<class T>
+int cast_int(T& element, int param=0){
+    return (int)element;
+}
+
+template<class T>
+void countsort(T* array, T* helper, int* count, int k, int size, int(*extract_key)(T& element, int param)=cast_int, int key_param=0){
+    std::memset(count, 0, k*sizeof(int));
+    std::memcpy(helper, array, size*sizeof(T));
+    //histogram
+    for(int i=0;i<size;i++){
+        int key = extract_key(helper[i], key_param);
+        count[key]++;
+    }   
+    //cumsum
+    int total = 0;
+    for(int i=0;i<k;i++){
+        int old_count = count[i];
+        count[i] = total;
+        total += old_count;  
+    }
+    //reorder
+    for(int i=0;i<size;i++){
+        T x = helper[i];
+        int key = extract_key(x, key_param);
+        int* cx = &count[key];
+        array[*cx] = x;
+        (*cx)++;
+    } 
+}
+
+
+//TODO: template specialize
+template<class T>
+int get_byte(T& element, int num_byte){
+    int out = (unsigned char)(element>>(num_byte*8) + 128);
+    return out;
+}
+
+void radixsort(int* array, int size){
+    int* helper = new int[size];
+    int count[256]; 
+    for(int i=0;i<4;i++){
+        countsort<int>(array, helper, count, 256, size, get_byte, i);
+    }
+}
