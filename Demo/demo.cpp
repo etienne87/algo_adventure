@@ -22,6 +22,9 @@ void sort(std::vector<int>& vec, std::string& method, int k){
   }else if(method=="radixsort"){
     std::cout<<"radixsort"<<std::endl;
     radixsort(&vec[0], vec.size());
+  }else if(method=="bubblesort"){
+    std::cout<<"bubblesort"<<std::endl;
+    bubblesort<int>(&vec[0], vec.size());
   }
 }
 
@@ -48,19 +51,20 @@ int main(int argc, char* argv[]){
   clock_t t = clock();
   sort(vec, method, k);
   t = clock() - t;
+  float m_items = (float)array_size/1000000.0;
   float runtime = ((float)t)/CLOCKS_PER_SEC;
-  float mevs = (float)array_size/runtime/1000000; 
+  float mevs = m_items/runtime; 
 
   if( !is_sorted<int>(&vec[0], vec.size())){
     std::cout<<"FAIL"<<std::endl;
 
-    int show_size = std::max((int)vec.size(), 100);
+    int show_size = std::min((int)vec.size(), 100);
     std::string msg1("unordered");
     std::string msg2("ordered");
     print_vec_wrapp<int>(msg1, &cpy[0], show_size);
     print_vec_wrapp<int>(msg2, &vec[0], show_size);
 
   }else{
-    std::cout<<"SUCCESS - Mev/s: "<<mevs<<std::endl;
+    std::cout<<"SUCCESS - Mev/s: "<<mevs<<" runtime: "<<runtime<<" for "<<m_items<<" Melems"<<std::endl;
   }    
 }
