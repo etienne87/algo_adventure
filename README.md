@@ -1,2 +1,2 @@
 # algo_adventure
-my journey learning algorithmic ... in c++
+algorithms and c++
