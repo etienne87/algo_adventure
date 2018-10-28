@@ -1,2 +1,2 @@
 # algo_adventure
-my journey learning algorithmic
+my journey learning algorithmic ... in c++
