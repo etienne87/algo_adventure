@@ -3,28 +3,25 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
+#include <algorithm>
 #include "sort.h"
 
 
 void sort(std::vector<int>& vec, std::string& method, int k){
   if(method=="quicksort"){
-    std::cout<<"qsort"<<std::endl;
     quicksort<int>(&vec[0], 0, vec.size()-1);
   }else if(method=="mergesort"){
-    std::cout<<"mergesort"<<std::endl;
     std::vector<int> tmp(vec.size(), -1);
     mergesort<int>(&vec[0], &tmp[0], 0, vec.size());
   }else if(method=="countsort"){
-    std::cout<<"countsort"<<std::endl;
     std::vector<int> tmp(vec.size(), -1);
     std::vector<int> count(k, 0);
     countsort<int>(&vec[0], &tmp[0], &count[0], k, vec.size());
   }else if(method=="radixsort"){
-    std::cout<<"radixsort"<<std::endl;
     radixsort(&vec[0], vec.size());
-  }else if(method=="bubblesort"){
-    std::cout<<"bubblesort"<<std::endl;
-    bubblesort<int>(&vec[0], vec.size());
+  }else if(method=="stdsort"){
+    //bubblesort<int>(&vec[0], vec.size());
+    std::sort(vec.begin(), vec.end());
   }
 }
 
@@ -49,13 +46,14 @@ int main(int argc, char* argv[]){
   std::memcpy(&cpy[0], &vec[0], vec.size()*4);
   
   clock_t t = clock();
-  sort(vec, method, k);
+  for(int i=0;i<10;i++)
+    sort(vec, method, k);
   t = clock() - t;
   float m_items = (float)array_size/1000000.0;
-  float runtime = ((float)t)/CLOCKS_PER_SEC;
+  float runtime = ((float)t)/CLOCKS_PER_SEC/10;
   float mevs = m_items/runtime; 
 
-  if( !is_sorted<int>(&vec[0], vec.size())){
+  if( !std::is_sorted(vec.begin(), vec.end())) {
     std::cout<<"FAIL"<<std::endl;
 
     int show_size = std::min((int)vec.size(), 100);

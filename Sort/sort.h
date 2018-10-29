@@ -28,14 +28,14 @@ void print_vec_wrapp(std::string& msg, T* array, int size){
     std::cout<<std::endl;
 }
 
-template<class T>
+/* template<class T>
 bool is_sorted(T* array, int size){
-    for(int i=0;i<size-2;++i){
+    for(int i=0;i<size-1;++i){
         if(array[i] > array[i+1])
             return false;
     }
     return true;
-}
+} */
 
 template<class T>
 void swap(T* array, int i, int j){
