@@ -135,7 +135,7 @@ void countsort(T* array, T* helper, int* count, int k, int size, int(*extract_ke
 //TODO: template specialize
 template<class T>
 int get_byte(T& element, int num_byte){
-    int out = (unsigned char)(element>>(num_byte*8) + 128);
+    int out = (unsigned char)(element>>(num_byte*8));
     return out;
 }
 

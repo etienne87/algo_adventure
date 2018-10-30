@@ -1,5 +1,12 @@
 cmake_minimum_required (VERSION 3.1)
 
-add_executable (SortDemo demo.cpp)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc highgui)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+
+
+add_executable (SortDemo sort_demo.cpp)
+add_executable (ArrayDemo array_demo.cpp)
 
 target_link_libraries (SortDemo LINK_PUBLIC Sort)
+target_link_libraries (ArrayDemo LINK_PUBLIC opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
