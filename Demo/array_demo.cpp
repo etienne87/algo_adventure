@@ -28,11 +28,50 @@ void rot90_inplace(cv::Mat& image){
     }
 }
 
+//mohammed sayz: this code is fucky
+bool one_edit_away(std::string& a, std::string& b){
+    int diffsize = a.size() - b.size();
+    if(diffsize == 0){
+        int edits = 0;
+        for(int i=0;i<a.size();i++){
+            if(a[i] != b[i])
+                edits++;
+            if(edits > 1)
+                return false;
+        }
+        return true;
+    }
+    else{
+        int edits = 0;
+        std::string bigger, smaller;
+        if(diffsize > 0){
+            bigger = a;
+            smaller = b;
+        }else{
+            bigger = b;
+            smaller = a;
+        }
+        int nedits = 0;
+        int bigger_idx = 0;
+        for(int smaller_idx=0;smaller_idx<smaller.size();smaller_idx++){
+            if(bigger[bigger_idx] != smaller[smaller_idx]){
+                if(bigger_idx == bigger.size())
+                    return false;
+                if(bigger[bigger_idx+1] == smaller[smaller_idx])
+                    edits++;
+            }
+            if(edits > 1)
+                return false;
+        }
+        return true;
+    }
+}
+
 int main(int argc, char* argv[]){
     srand(0);
     std::cout<<"Arrays Demo"<<std::endl;
 
-    std::string filename = "/home/eperot/Pictures/bowsette.jpg";
+    /* std::string filename = "/home/eperot/Pictures/bowsette.jpg";
     if(argc > 1)
         filename = argv[1];
 
@@ -49,5 +88,21 @@ int main(int argc, char* argv[]){
     cv::imshow("Rot90", cpy);
     int key = cv::waitKey();
     if(key == 27)
-        exit(0); 
+        exit(0);  */
+
+    std::string a("pale"); 
+    std::string b("ple");
+    std::cout<<a<<";"<<b<<" - one edit away? "<<one_edit_away(a, b)<<std::endl;
+
+    a = "pales";
+    b = "pale";
+    std::cout<<a<<";"<<b<<" - one edit away? "<<one_edit_away(a, b)<<std::endl;
+
+    a = "pale";
+    b = "bale";
+    std::cout<<a<<";"<<b<<" - one edit away? "<<one_edit_away(a, b)<<std::endl;
+
+    a = "pale";
+    b = "bake";
+    std::cout<<a<<";"<<b<<" - one edit away? "<<one_edit_away(a, b)<<std::endl;
 }
