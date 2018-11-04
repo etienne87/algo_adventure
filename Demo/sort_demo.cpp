@@ -71,14 +71,16 @@ int main(int argc, char* argv[]){
   int idx = 0;
 
   t = clock();
-  for(int i=0;i<10;i++)
+  for(int i=0;i<100;i++)
     idx = binary_search<int>(&vec[0], vec.size(), d);
   t = clock() - t;
   m_items = (float)array_size/1000000.0;
-  runtime = ((float)t)/CLOCKS_PER_SEC/10;
+  runtime = ((float)t)/CLOCKS_PER_SEC/100;
   mevs = m_items/runtime; 
 
-  if(idx > 0){
-    std::cout<<"SUCCESS - Mev/s: "<<mevs<<" runtime: "<<runtime<<" for "<<m_items<<" Melems"<<std::endl;
+  if(idx > 0 && vec[idx] == d){
+    std::cout<<"Binary Search SUCCESS right index: "<<idx<<" - Mev/s: "<<mevs<<" runtime: "<<runtime<<" for "<<m_items<<" Melems"<<std::endl;
+  }else{
+    std::cout<<"FAIL"<<std::endl;
   }
 }

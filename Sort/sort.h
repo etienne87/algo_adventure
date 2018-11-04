@@ -149,5 +149,20 @@ void radixsort(int* array, int size){
 
 template<class T>
 int binary_search(T* array, int size, int d){
-
+    int low = 0;
+    int high = size;
+    T mid = 0;
+    int middle = 0;
+    while(low < high){
+        middle = (low+high)/2;
+        mid = array[middle];
+        if(mid == d){
+            return middle;
+        }else if(mid > d){
+            high = middle - 1;
+        }else if(mid < d){
+            low = middle + 1;
+        }
+    }
+    return -1;
 }
