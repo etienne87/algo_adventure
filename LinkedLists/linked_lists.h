@@ -27,7 +27,10 @@ public:
             delete tmp;
         }
     }
-    Node* tail(){
+    Node* get_head(){
+        return head;
+    }
+    Node* get_tail(){
         Node* tmp = head;
         while(tmp->next != NULL){
             tmp = tmp->next;
@@ -35,7 +38,7 @@ public:
         return tmp;
     }
     void append(int d){
-        Node* tmp = tail();
+        Node* tmp = get_tail();
         tmp->next = new Node(d);
     }
 
@@ -47,7 +50,16 @@ public:
         } 
         return os;
     }
-    Node* get_head(){return head;}
+    
+    int get_size(){
+        int count = 0;
+        Node* tmp = head;
+        while(tmp->next != NULL){
+            tmp = tmp->next;
+            count++;
+        }
+        return count;
+    }
 
     void fill_randomly(int size, int maximum){
         data = rand()%maximum;
@@ -126,7 +138,13 @@ int kth_last(List& list, int k){
 }
 
 void delete_middle_node(Node* node){
-
+    Node* tmp = node;
+    while(tmp && tmp->next->next){
+        tmp->data = tmp->next->data;
+        tmp = tmp->next;
+    }
+    delete tmp->next;
+    tmp->next = NULL;
 }
 
 void partition(List& list){
@@ -141,8 +159,35 @@ void is_palindrome(List& list){
     
 }
 
-int intersection(List& a, List& b){
+bool intersection(List& a, List& b){
+    int len_a = a.get_size();
+    int len_b = b.get_size();
 
+    List* a_, *b_;
+    if(len_a > len_b){
+        a_ = &a;
+        b_ = &b;
+    }else{
+        a_ = &b;
+        b_ = &a;
+        int tmp = len_b;
+        len_b = len_a;
+        len_a = tmp;
+    }
+
+    Node* aptr = a_->get_head();
+    for(int i=0;i<len_a-len_b;i++){
+        aptr = aptr->next;
+    }
+    Node* bptr = b_->get_head();
+    for(int i=0;i<len_b;i++){
+        if(aptr == bptr)
+            return true;
+        aptr = aptr->next;
+        bptr = bptr->next;
+    }
+    
+    return false;
 }
 
 int detect_loop(List& list){
