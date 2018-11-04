@@ -92,8 +92,8 @@ private:
     int data;
 };
 
-//TODO
 void remove_duplicates(List& list){
+    // if hash not allowed, then you need to sort first & then scan
     Node* prev = NULL;
     Node* curr = list.get_head();
     std::unordered_set<int> set;
@@ -106,13 +106,23 @@ void remove_duplicates(List& list){
             prev->next = curr->next;
             delete curr;
             curr = prev->next;
-        }
-        
+        }  
     }
 }
 
-void top_k(List& list){
-
+int kth_last(List& list, int k){
+    int idx = 0;
+    Node* tmp = list.get_head();
+    while(tmp->next != NULL){
+        tmp = tmp->next;
+        idx++;
+    }
+    idx -= k;
+    tmp = list.get_head();
+    for(int i=0;i<=idx;i++){
+        tmp = tmp->next;
+    }
+    return tmp->data;
 }
 
 void delete_middle_node(Node* node){

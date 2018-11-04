@@ -25,8 +25,11 @@ int main(int argc, char* argv[]){
     std::cout<<"list: "<<list<<std::endl;
 
     //list.delete_nodes(4);
-    remove_duplicates(list);
+    //remove_duplicates(list);
 
-    std::cout<<"list: "<<list<<std::endl;
+    int klast = kth_last(list, 3);
 
+    //std::cout<<"list: "<<list<<std::endl;
+
+    std::cout<<"klast: "<<klast<<std::endl;
 }
