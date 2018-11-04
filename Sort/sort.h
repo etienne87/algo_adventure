@@ -28,14 +28,14 @@ void print_vec_wrapp(std::string& msg, T* array, int size){
     std::cout<<std::endl;
 }
 
-/* template<class T>
+template<class T>
 bool is_sorted(T* array, int size){
     for(int i=0;i<size-1;++i){
         if(array[i] > array[i+1])
             return false;
     }
     return true;
-} */
+} 
 
 template<class T>
 void swap(T* array, int i, int j){
@@ -132,7 +132,6 @@ void countsort(T* array, T* helper, int* count, int k, int size, int(*extract_ke
 }
 
 
-//TODO: template specialize
 template<class T>
 int get_byte(T& element, int num_byte){
     int out = (unsigned char)(element>>(num_byte*8));
@@ -145,4 +144,10 @@ void radixsort(int* array, int size){
     for(int i=0;i<4;i++){
         countsort<int>(array, helper, count, 256, size, get_byte, i);
     }
+}
+
+
+template<class T>
+int binary_search(T* array, int size, int d){
+
 }

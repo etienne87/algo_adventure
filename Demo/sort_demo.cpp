@@ -64,4 +64,21 @@ int main(int argc, char* argv[]){
   }else{
     std::cout<<"SUCCESS - Mev/s: "<<mevs<<" runtime: "<<runtime<<" for "<<m_items<<" Melems"<<std::endl;
   }    
+
+  //Search for a random integer inside
+  int random_index = rand()%vec.size();
+  int d = vec[random_index];
+  int idx = 0;
+
+  t = clock();
+  for(int i=0;i<10;i++)
+    idx = binary_search<int>(&vec[0], vec.size(), d);
+  t = clock() - t;
+  m_items = (float)array_size/1000000.0;
+  runtime = ((float)t)/CLOCKS_PER_SEC/10;
+  mevs = m_items/runtime; 
+
+  if(idx > 0){
+    std::cout<<"SUCCESS - Mev/s: "<<mevs<<" runtime: "<<runtime<<" for "<<m_items<<" Melems"<<std::endl;
+  }
 }
