@@ -9,7 +9,24 @@ int main(int argc, char* argv[]){
     srand(0);
     std::cout<<"LinkedLists Demo"<<std::endl;
 
-    auto list = build_random_list(10);
+    auto list = List(4);
+    //list.arange(10);
+    list.append(4);
+    list.append(4);
+    list.append(5);
+    list.append(4);
+    list.append(7);
+    list.append(3);
+    list.append(3);
+    list.append(5);
+    list.append(6);
+    list.append(7);
+    
+    std::cout<<"list: "<<list<<std::endl;
+
+    //list.delete_nodes(4);
+    remove_duplicates(list);
+
     std::cout<<"list: "<<list<<std::endl;
 
 }

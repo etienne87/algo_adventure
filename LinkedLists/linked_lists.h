@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib> 
 #include <cstring>
+#include <unordered_set>
+
 
 struct Node
 {
@@ -46,16 +48,93 @@ public:
         return os;
     }
     Node* get_head(){return head;}
+
+    void fill_randomly(int size, int maximum){
+        data = rand()%maximum;
+        for(int i=0;i<size-1;i++){
+            this->append(rand()%maximum);
+        }
+    }
+
+    void arange(int size){
+        data = 0;
+        for(int i=1;i<size;i++){
+            this->append(i);
+        }
+    }
+
+    void delete_nodes(int d){
+        Node* prev = NULL;
+        Node* curr = head;
+        while(curr){
+            if(curr->data == d){
+                if(prev == NULL){
+                    head = head->next;
+                    delete curr;
+                    curr = head;
+                }else if(curr->next == NULL){
+                    delete curr;
+                    prev->next = NULL;
+                    curr = NULL;
+                }else{
+                    prev->next = curr->next;
+                    delete curr;
+                    curr = prev->next;
+                }
+            }else{
+                prev = curr;
+                curr = curr->next;
+            } 
+        }
+    }
 private:
     Node* head;
     int data;
 };
 
-
-List build_random_list(int size, int maximum=100){
-    List list(rand()%maximum);
-    for(int i=0;i<size-1;++i){
-        list.append(rand()%maximum);
+//TODO
+void remove_duplicates(List& list){
+    Node* prev = NULL;
+    Node* curr = list.get_head();
+    std::unordered_set<int> set;
+    while(curr){
+        if( set.find(curr->data) == set.end()){
+            set.insert(curr->data);
+            prev = curr;
+            curr = curr->next;
+        }else{  
+            prev->next = curr->next;
+            delete curr;
+            curr = prev->next;
+        }
+        
     }
-    return list;
+}
+
+void top_k(List& list){
+
+}
+
+void delete_middle_node(Node* node){
+
+}
+
+void partition(List& list){
+
+}
+
+void sum_lists(List& list){
+
+}
+
+void is_palindrome(List& list){
+    
+}
+
+int intersection(List& a, List& b){
+
+}
+
+int detect_loop(List& list){
+    
 }
