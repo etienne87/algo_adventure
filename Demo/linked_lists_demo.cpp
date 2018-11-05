@@ -9,24 +9,25 @@ int main(int argc, char* argv[]){
     srand(0);
     std::cout<<"LinkedLists Demo"<<std::endl;
 
+    /*
     auto list = List(4);
     //list.arange(10);
     list.append(4);
     list.append(4);
     list.append(5);
     list.append(4);
-    /* list.append(7);
+    list.append(7);
     list.append(3);
     list.append(3);
     list.append(5);
     list.append(6);
-    list.append(7); */
+    list.append(7); 
     
     std::cout<<"list: "<<list<<std::endl;
 
     //list.delete_nodes(4);
-    //remove_duplicates(list); 
-    //std::cout<<"2.1 duplicate removal: "<<list<<std::endl;
+    remove_duplicates(list); 
+    std::cout<<"2.1 duplicate removal: "<<list<<std::endl;
 
  
     int klast = kth_last(list, 3);
@@ -56,11 +57,29 @@ int main(int argc, char* argv[]){
     a.append(13);
 
     bool inter = intersection(a, b);
-    std::cout<<"does intersect? "<<inter<<std::endl;
+    std::cout<<"2.7 does intersect? "<<inter<<std::endl;
 
     std::cout<<"a: "<<a<<std::endl;
-
-    
     b_end->next = NULL; //avoid delete twice
- 
+    */
+
+ /*    auto list2 = List(4);
+    list2.fill_randomly(10, 30);
+
+    std::cout<<"2.4 before partition: "<<list2<<std::endl;
+
+    partition(list2, 10);
+
+    std::cout<<"2.4 after partition: "<<list2<<std::endl;
+ */
+
+    auto a = List(2);
+    a.append(2);a.append(3);
+
+    auto b = List(7);
+    b.append(8);b.append(9);
+
+    int c = sum_lists(a, b);
+
+    std::cout<<"2.5: 223 + 789: "<<c<<" gt : "<<223+789<<std::endl;
 }

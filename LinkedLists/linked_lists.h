@@ -30,6 +30,9 @@ public:
     Node* get_head(){
         return head;
     }
+    void set_head(Node* tmp){
+        head = tmp;
+    }
     Node* get_tail(){
         Node* tmp = head;
         while(tmp->next != NULL){
@@ -54,7 +57,7 @@ public:
     int get_size(){
         int count = 0;
         Node* tmp = head;
-        while(tmp->next != NULL){
+        while(tmp){
             tmp = tmp->next;
             count++;
         }
@@ -147,18 +150,6 @@ void delete_middle_node(Node* node){
     tmp->next = NULL;
 }
 
-void partition(List& list){
-
-}
-
-void sum_lists(List& list){
-
-}
-
-void is_palindrome(List& list){
-    
-}
-
 bool intersection(List& a, List& b){
     int len_a = a.get_size();
     int len_b = b.get_size();
@@ -188,6 +179,77 @@ bool intersection(List& a, List& b){
     }
     
     return false;
+}
+
+void partition(List& list, int x){
+    int size = list.get_size();
+    Node* head = NULL;
+    Node* tail = list.get_tail();
+
+    Node* prev = NULL;
+    Node* curr = list.get_head();
+    for(int i=0;i<size;i++){
+        if(curr->data >= x){
+            if(!prev){
+                head = curr->next;
+            }else{
+                //detach
+                prev->next = curr->next;
+            }
+            tail->next = curr;
+            tail = tail->next;
+            tail->next = NULL;
+
+            curr = prev->next;
+        }else{
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+    if(head)
+        list.set_head(head);
+}
+
+int sum_lists(List& a, List& b){
+    int sum = 0;
+    Node* ah = a.get_head();
+    Node* bh = b.get_head();
+    int asize = a.get_size();
+    int bsize = b.get_size();
+    int diff = asize-bsize;
+
+    Node* a_, *b_;
+    int big, small;
+    if(diff>0){
+        a_ = ah;
+        b_ = bh;
+        big = asize;
+        small = bsize;
+    }else{
+        b_ = ah;
+        a_ = bh;
+        big = bsize;
+        small = asize;
+    }
+    std::cout<<"diff: "<<diff<<" small: "<<small<<std::endl;
+    for(int i=0;i<abs(diff);i++){
+        sum *= 10;
+        sum += a_->data;
+        a_ = a_->next;
+    }
+    std::cout<<"sum at this point: "<<sum<<std::endl;
+    for(int i=0;i<small;i++){
+        sum *= 10;
+        sum += a_->data + b_->data;
+        a_ = a_->next;
+        b_ = b_->next;
+    }
+    
+    return sum;
+}
+
+void is_palindrome(List& list){
+    
 }
 
 int detect_loop(List& list){
