@@ -2,7 +2,7 @@
 #include <cstdlib> 
 #include <cstring>
 #include <unordered_set>
-
+#include <list>
 
 struct Node
 {
@@ -193,8 +193,7 @@ void partition(List& list, int x){
             if(!prev){
                 head = curr->next;
             }else{
-                //detach
-                prev->next = curr->next;
+                prev->next = curr->next; //detach
             }
             tail->next = curr;
             tail = tail->next;
@@ -231,13 +230,11 @@ int sum_lists(List& a, List& b){
         big = bsize;
         small = asize;
     }
-    std::cout<<"diff: "<<diff<<" small: "<<small<<std::endl;
     for(int i=0;i<abs(diff);i++){
         sum *= 10;
         sum += a_->data;
         a_ = a_->next;
     }
-    std::cout<<"sum at this point: "<<sum<<std::endl;
     for(int i=0;i<small;i++){
         sum *= 10;
         sum += a_->data + b_->data;
@@ -248,10 +245,49 @@ int sum_lists(List& a, List& b){
     return sum;
 }
 
-void is_palindrome(List& list){
+bool is_palindrome(List& list){
+    Node* curr = list.get_head();
     
+    Node* head = NULL;
+    while(curr){
+        Node* tmp = new Node(curr->data);
+        tmp->next = head;
+        head = tmp;
+        curr = curr->next; 
+    }
+
+    bool check = true;
+   
+    curr = list.get_head();
+    Node* rev = head;
+    while(curr){
+        if(rev->data != curr->data)
+            check = false;
+        rev = rev->next;
+        curr = curr->next;
+    }  
+
+    //delete reverse
+    curr = head;
+    while(curr){
+        Node* tmp = curr;
+        curr = curr->next;
+        delete tmp;
+    } 
+    return check;
 }
 
 int detect_loop(List& list){
-    
+    Node* ptr1 = list.get_head();
+    Node* ptr2 = list.get_head();
+
+    int k = 2;
+
+    int idx = 0;
+    while(ptr1 != ptr2 && ptr1 && ptr2){
+        
+        ptr1 = ptr1->next;
+        ptr2 = ptr2->next->next;
+    }
+
 }
