@@ -140,6 +140,7 @@ int kth_last(List& list, int k){
     return tmp->data;
 }
 
+//swap and remove after instead!
 void delete_middle_node(Node* node){
     Node* tmp = node;
     while(tmp && tmp->next->next){
@@ -209,6 +210,7 @@ void partition(List& list, int x){
         list.set_head(head);
 }
 
+//could just translate & then do the op
 int sum_lists(List& a, List& b){
     int sum = 0;
     Node* ah = a.get_head();
@@ -277,6 +279,7 @@ bool is_palindrome(List& list){
     return check;
 }
 
+//honestly, solve this shit with an hash-table...the 0(1) Memory solution i do not get it :-(
 int detect_loop(List& list){
     Node* ptr1 = list.get_head();
     Node* ptr2 = list.get_head();
