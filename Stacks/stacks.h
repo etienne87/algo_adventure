@@ -310,8 +310,46 @@ private:
 
 //first push to s1
 //then as popping from s1, push to s2
-class QueuebyStack{
-
+class QueueViaStack{
+public:
+    void push(const int& item){
+        s1.push(item);
+    }
+    int pop(){
+        if(s2.empty())
+            transfer();
+        int val = s2.pop();
+        return val;
+    }
+    void transfer(){
+        while(!s1.empty()){
+           s2.push(s1.pop());
+        }
+    }
 private:
     Stack<int> s1, s2;
+};
+
+class SortedStack{
+public:
+    void push(const int& item){
+        if(main.empty()){
+            main.push(item);
+        }else{
+            //O(N) to insert!
+             Stack<int> tmp;
+             while(main.peek() < item && !main.empty()){
+                 tmp.push(main.pop());
+             }
+             main.push(item);
+             while(!tmp.empty()){
+                main.push(tmp.pop());
+             }
+        }
+    }
+    int pop(){
+        return main.pop();
+    }    
+private:
+    Stack<int> main;
 };

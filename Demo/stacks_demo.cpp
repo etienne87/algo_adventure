@@ -43,7 +43,31 @@ int main(int argc, char* argv[]){
             int val = lifo.popAt(0);
             int val2 = lifo.popAt(0);
             std::cout<<val<<" "<<val2<<" "<<lifo<<std::endl;
-        }  
+        }else if(exo == 4){
+            QueueViaStack fifo;
+            fifo.push(1);
+            fifo.push(2);
+            fifo.push(3);
+            fifo.push(4);
+            int val1 = fifo.pop();
+            fifo.push(5);
+            int val2 = fifo.pop();
+            fifo.push(6);
+            int val3 = fifo.pop();
+            fifo.push(7);
+            std::cout<<val1<<" "<<val2<<" "<<val3<<" ";
+            std::cout<<fifo.pop()<<" "<<fifo.pop()<<" "<<
+            fifo.pop()<<" "<<fifo.pop()<<std::endl;
+        }else if(exo == 5){
+            SortedStack lifo;
+            for(int i=0;i<10;i++){
+                lifo.push(rand()%100);
+            }
+            for(int i=0;i<10;i++){
+                std::cout<<lifo.pop()<<std::endl;
+            }
+        }        
+        
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }
