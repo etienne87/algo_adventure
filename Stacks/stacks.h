@@ -2,25 +2,42 @@
 #include <cstdlib> 
 #include <cstring>
 #include <unordered_set>
+#include <exception>
 
-
+template<class T>
 struct Node
 {
-    Node(int d=0){
+    Node(){
+        std::cout<<"Node ctor neutral called"<<std::endl;
+        next = NULL;
+    }
+    Node(T d){
         data = d;
         next = NULL;
     }
     Node* next;
-    int data;
+    T data;
 };
 
+template<class T>
 class Stack{
 public:
     Stack(){
+        std::cout<<"Stack ctor neutral called "<<std::endl;
         tail = NULL;
+        size = 0;
     }
-    Stack(int d){
-        tail = new Node(d);
+    Stack(T d){
+        tail = NULL;
+        size = 0;
+        push(d);
+    }
+    Stack(const Stack<T>& cpy):tail(NULL), size(0){
+        Node<T>* tmp = cpy.tail;
+        while(tmp != NULL){
+            push(tmp->data);
+            tmp = tmp->next;
+        }
     }
     ~Stack(){
         while(tail){
@@ -31,46 +48,95 @@ public:
     bool empty(){
         return tail == NULL;
     }
-    int peek(){
+    T peek(){
         if(tail)
             return tail->data;
         else
             return -1;
     }
-    void push(int item){
-        Node* tmp = new Node(item);
+    void push(T item){
+        auto* tmp = new Node<T>(item); 
         tmp->next = tail;
         tail = tmp;
+        size++;
     }
-    int pop(){
-        Node* tmp = tail;
+    T pop(){
+        size--;
+        Node<T>* tmp = tail;
         tail = tmp->next;
-        int data = tmp->data;
+        T data = tmp->data;
         delete tmp;
         return data;
     }
 
     friend std::ostream& operator<<(std::ostream& os, Stack const& tc) {
-        Node* tmp = tc.tail;
-        while(tmp != NULL){
+        Node<T>* tmp = tc.tail;
+        while(tmp){
             os<<tmp->data<<" ";
             tmp = tmp->next;
         } 
         return os;
     }
-
-public:
-    Node* tail;
+    int get_size(){return size;}
+    Node<T>* get_tail(){return tail;}
+protected:
+    Node<T>* tail;
+    int size;
 }; 
+
+//Implemented as an ArrayStack
+/* class SuperStack{
+public:
+    SuperStack(int cap){
+        tail = NULL;
+        size = 0;
+        capacity = cap;
+        if(capacity == 0){
+            throw std::logic_error("Stack won't work with 0 capacity");
+        }
+    }
+    
+    ~SuperStack(){
+       
+    }
+
+    bool empty(){
+        
+    }
+    int peek(){
+       
+    }
+   
+    void push(int item){
+       
+    }
+    
+    int pop(){
+        
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, SuperStack& tc) {
+        
+        return os;
+    }
+    
+public:
+    Node<Stack<int>>* tail;
+    int capacity;
+    int size;
+};  */
+
+
 
 //A stack that can retrieve minimum in 0(1)
 //BUGFIX: there is a bug in here with empty() function
-class MinStack : public Stack{
+template<class T>
+class MinStack : public Stack<T>{
 public:
     MinStack():mins(){
         this->tail = NULL;
     }
-    MinStack(int d):Stack(d){
+    MinStack(int d):Stack<T>(d){
         mins.push(d);
     }
     int min(){
@@ -80,26 +146,26 @@ public:
         if(item < mins.peek() || mins.empty()){
             mins.push(item);
         }
-        Stack::push(item);
+        Stack<T>::push(item);
     }
     int pop(){
-        if( peek() == mins.peek())
+        if( Stack<T>::peek() == mins.peek())
             mins.pop();
-        return Stack::pop();
+        return Stack<T>::pop();
     }
 
 public:
-    Stack mins;
+    Stack<T> mins;
 };
 
-
+template<class T>
 class Queue{
 public:
     Queue(){
         head = tail = NULL;
     }
     Queue(int d){
-        head = tail = new Node(d);
+        head = tail = new Node<T>(d);
     }
     ~Queue(){
         while(head){
@@ -110,29 +176,29 @@ public:
     bool empty(){
         return head == tail == NULL;
     }
-    int peek(){
+    T peek(){
         if(head)
             return head->data;
     }
 
     //extends tail
-    void push(int item){
-        Node* tmp = new Node(item);
+    void push(T item){
+        auto* tmp = new Node<T>(item);
         tail->next = tmp;
         tail = tmp;
     }
 
     //removes head
-    int pop(){
-        Node* tmp = head;
+    T pop(){
+        Node<T>* tmp = head;
         head = tmp->next;
-        int data = tmp->data;
+        T data = tmp->data;
         delete tmp;
         return data;
     }
 
-    friend std::ostream& operator<<(std::ostream& os, Queue const& tc) {
-        Node* tmp = tc.head;
+    friend std::ostream& operator<<(std::ostream& os, Queue<T> const& tc) {
+        Node<T>* tmp = tc.head;
         while(tmp != NULL){
             os<<tmp->data<<" ";
             tmp = tmp->next;
@@ -141,16 +207,17 @@ public:
     }
 
 private:
-    Node* head;
-    Node* tail;
+    Node<T>* head;
+    Node<T>* tail;
 }; 
 
-//A Single Queue using a simple array
+//A Single Queue using a simple array (goal is then to design 3 different stacks inside this array)
+template<class T>
 class ArrayStack{
 public:
     ArrayStack(int d=0){
         max_size = 16;
-        array = new int[max_size];
+        array = new T[max_size];
         array[0] = d;
         size += 1;
     }
@@ -192,16 +259,23 @@ public:
     }
 
 private:
-    int* array;
+    T* array;
     int max_size;
     int size;
 
     void extend(){
         max_size *= 2;
-        int* new_array = new int[max_size];
-        memcpy(new_array, array, max_size*sizeof(int));
+        T* new_array = new int[max_size];
+        memcpy(new_array, array, max_size*sizeof(T));
         delete []array;
         array = new_array;
     }
 };
 
+//first push to s1
+//then as popping from s1, push to s2
+class QueuebyStack{
+
+private:
+    Stack<int> s1, s2;
+};
