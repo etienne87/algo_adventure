@@ -65,14 +65,12 @@ public:
     }
 
     void fill_randomly(int size, int maximum){
-        data = rand()%maximum;
         for(int i=0;i<size-1;i++){
             this->append(rand()%maximum);
         }
     }
 
     void arange(int size){
-        data = 0;
         for(int i=1;i<size;i++){
             this->append(i);
         }
@@ -104,7 +102,6 @@ public:
     }
 private:
     Node* head;
-    int data;
 };
 
 void remove_duplicates(List& list){

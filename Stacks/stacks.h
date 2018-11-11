@@ -8,7 +8,6 @@ template<class T>
 struct Node
 {
     Node(){
-        std::cout<<"Node ctor neutral called"<<std::endl;
         next = NULL;
     }
     //interesting to remind: if you put here data = d, and you forget to make a operator =  for your T class
@@ -19,7 +18,6 @@ struct Node
         next = NULL;
     }
     Node* next;
-    Node* prev;
     T data;
 };
 
