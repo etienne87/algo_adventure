@@ -19,6 +19,7 @@ struct Node
         next = NULL;
     }
     Node* next;
+    Node* prev;
     T data;
 };
 
@@ -200,10 +201,22 @@ class Queue{
 public:
     Queue(){
         head = tail = NULL;
+        size = 0;
     }
-    Queue(int d){
-        head = tail = new Node<T>(d);
+    Queue(T d){
+        head = tail = NULL;
+        size = 0;
+        push(d);
     }
+    Queue(const Queue<T>& cpy){
+        head = tail = NULL;
+        Node<T>* tmp = cpy.head;
+        while(tmp != NULL){
+            push(tmp->data);
+            tmp = tmp->next;
+        } 
+    }
+  
     ~Queue(){
         while(head){
             pop();
@@ -221,8 +234,11 @@ public:
     //extends tail
     void push(const T& item){
         auto* tmp = new Node<T>(item);
-        tail->next = tmp;
+        if(tail)
+            tail->next = tmp;
         tail = tmp;
+        if(!head)
+            head = tail;
     }
 
     //removes head
@@ -243,9 +259,16 @@ public:
         return os;
     }
 
+    Node<T>* get_head(){return head;}
+    Node<T>* get_tail(){return tail;}
+    
+    void set_head(Node<T>* h){head = h;}
+    void set_tail(Node<T>* t){tail = t;}
+
 private:
     Node<T>* head;
     Node<T>* tail;
+    int size;
 }; 
 
 //A Single Queue using a simple array (goal is then to design 3 different stacks inside this array)
@@ -353,4 +376,49 @@ public:
     }    
 private:
     Stack<int> main;
+};
+
+struct Animal{
+    Animal(std::string n, bool dog){
+        name = n;
+        is_dog = dog;
+    }
+    std::string name;
+    bool is_dog;
+    int age;
+};
+
+class AnimalShelter{
+public:
+    AnimalShelter(){
+        count = 0;
+    }
+    void push(Animal& pet){
+        pet.age = count++;
+        if(pet.is_dog){
+            dogs.push(pet);
+        }else{
+            cats.push(pet);
+        }
+    }
+    Animal dequeueAny(){
+        int dog_age = dogs.peek().age;
+        int cat_age = cats.peek().age;
+        if(dog_age < cat_age){
+            return dogs.pop();
+        }else{
+            return cats.pop();
+        }
+    }    
+    Animal dequeuePet(bool is_dog){
+        if(is_dog)
+            return dogs.pop();
+        else
+            return cats.pop();
+    } 
+
+private:
+    Queue<Animal> cats; 
+    Queue<Animal> dogs;
+    int count;
 };

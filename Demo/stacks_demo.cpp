@@ -66,12 +66,37 @@ int main(int argc, char* argv[]){
             for(int i=0;i<10;i++){
                 std::cout<<lifo.pop()<<std::endl;
             }
-        }        
+        }else if(exo == 6){
+            Animal pet1("fluffy", true);
+            Animal pet2("felix", false);
+            Animal pet3("barney", true);
+            Animal pet4("ted", false);
+            Animal pet5("test", false);
+            AnimalShelter fifo;
+            
+            fifo.push(pet1);
+            fifo.push(pet2);
+            fifo.push(pet3);
+            fifo.push(pet4); 
+            fifo.push(pet5);
+            fifo.dequeueAny();
+
+
+
+
+            Animal cat1 = fifo.dequeuePet(false);
+            Animal cat2 = fifo.dequeuePet(false);
+            Animal pet = fifo.dequeueAny();
+
+            std::cout<<cat1.name<<std::endl;
+            std::cout<<cat2.name<<std::endl; 
+            std::cout<<pet.name<<std::endl; 
+        
+        }           
         
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }
-    
 
 
 
