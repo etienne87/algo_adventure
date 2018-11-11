@@ -2,12 +2,12 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
-#include "linked_lists.h"
+#include "lists.h"
 
 
 int main(int argc, char* argv[]){
     srand(0);
-    std::cout<<"LinkedLists Demo"<<std::endl;
+    std::cout<<"Lists Demo"<<std::endl;
     int exo = 0;
 
     if(argc > 1)
