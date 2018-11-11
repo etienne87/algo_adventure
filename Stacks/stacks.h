@@ -11,8 +11,11 @@ struct Node
         std::cout<<"Node ctor neutral called"<<std::endl;
         next = NULL;
     }
-    Node(T d){
-        data = d;
+    //interesting to remind: if you put here data = d, and you forget to make a operator =  for your T class
+    //then it will be deleted twice!
+    //here we call the copy ctor bc we made one, but it is also likely to crash if you forget to implement one
+    //Also we pass by reference, in order to avoid a copy
+    Node(const T& d):data(d){
         next = NULL;
     }
     Node* next;
@@ -23,7 +26,6 @@ template<class T>
 class Stack{
 public:
     Stack(){
-        std::cout<<"Stack ctor neutral called "<<std::endl;
         tail = NULL;
         size = 0;
     }
@@ -54,7 +56,7 @@ public:
         else
             return -1;
     }
-    void push(T item){
+    void push(const T& item){
         auto* tmp = new Node<T>(item); 
         tmp->next = tail;
         tail = tmp;
@@ -79,52 +81,86 @@ public:
     }
     int get_size(){return size;}
     Node<T>* get_tail(){return tail;}
+    void set_tail(Node<T>* tmp){tail = tmp;}
 protected:
     Node<T>* tail;
     int size;
 }; 
 
-//Implemented as an ArrayStack
-/* class SuperStack{
+//Implemented as a Stack of Stack using templates!
+class SuperStack{
 public:
-    SuperStack(int cap){
-        tail = NULL;
+    SuperStack(int cap=16){
         size = 0;
         capacity = cap;
         if(capacity == 0){
             throw std::logic_error("Stack won't work with 0 capacity");
         }
     }
-    
-    ~SuperStack(){
-       
-    }
 
     bool empty(){
-        
+        return super.empty();
     }
+
     int peek(){
-       
+        if(!empty())
+            return super.get_tail()->data.peek();
     }
    
     void push(int item){
-       
+       if(empty() || super.get_tail()->data.get_size() >= capacity){
+           Stack<int> tmp(item);
+           super.push(tmp);
+           size++;
+       }else{
+           super.get_tail()->data.push(item);
+       }
     }
     
     int pop(){
-        
+        if(!empty()){
+            int value = super.get_tail()->data.pop();
+            if(super.get_tail()->data.empty()){
+                super.pop();
+                size--;
+            }
+            return value;
+        }
+    }
+
+    int popAt(int idx){
+        if(idx < 0 || idx > size-1)
+            throw std::logic_error("index > stack.size");
+        Node<Stack<int>>* curr = super.get_tail();
+        Node<Stack<int>>* prev = NULL;
+        for(int i=0;i<idx-1;i++){
+            prev = curr;
+            curr = curr->next;
+        }
+        int value = curr->data.pop();
+        if(curr->data.empty()){
+            Node<Stack<int>>* tmp = curr;
+            if(!prev){
+                super.set_tail(curr->next);
+            }else{
+                prev->next = curr->next;
+            }
+            delete tmp;
+        }
+        return value;
     }
 
     friend std::ostream& operator<<(std::ostream& os, SuperStack& tc) {
-        
+        os<<tc.super;
         return os;
     }
     
-public:
-    Node<Stack<int>>* tail;
+    int get_size(){return size;}
+private:
+    Stack<Stack<int>> super;
     int capacity;
     int size;
-};  */
+};  
 
 
 
@@ -182,7 +218,7 @@ public:
     }
 
     //extends tail
-    void push(T item){
+    void push(const T& item){
         auto* tmp = new Node<T>(item);
         tail->next = tmp;
         tail = tmp;
