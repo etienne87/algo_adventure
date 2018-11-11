@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
                 std::cout<<mins.min()<<" "<<mins.peek()<<std::endl;
             } 
         }else if(exo == 3){
-            SuperStack lifo(1);
+            SuperStack<int> lifo(1);
             lifo.push(1);
             lifo.push(2);
             lifo.push(3);

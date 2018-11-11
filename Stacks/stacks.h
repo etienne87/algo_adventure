@@ -88,6 +88,7 @@ protected:
 }; 
 
 //Implemented as a Stack of Stack using templates!
+template<class T>
 class SuperStack{
 public:
     SuperStack(int cap=16){
@@ -107,9 +108,9 @@ public:
             return super.get_tail()->data.peek();
     }
    
-    void push(int item){
+    void push(const T& item){
        if(empty() || super.get_tail()->data.get_size() >= capacity){
-           Stack<int> tmp(item);
+           Stack<T> tmp(item);
            super.push(tmp);
            size++;
        }else{
@@ -117,9 +118,9 @@ public:
        }
     }
     
-    int pop(){
+    T pop(){
         if(!empty()){
-            int value = super.get_tail()->data.pop();
+            T value = super.get_tail()->data.pop();
             if(super.get_tail()->data.empty()){
                 super.pop();
                 size--;
@@ -128,18 +129,18 @@ public:
         }
     }
 
-    int popAt(int idx){
+    T popAt(int idx){
         if(idx < 0 || idx > size-1)
             throw std::logic_error("index > stack.size");
-        Node<Stack<int>>* curr = super.get_tail();
-        Node<Stack<int>>* prev = NULL;
+        Node<Stack<T>>* curr = super.get_tail();
+        Node<Stack<T>>* prev = NULL;
         for(int i=0;i<idx-1;i++){
             prev = curr;
             curr = curr->next;
         }
         int value = curr->data.pop();
         if(curr->data.empty()){
-            Node<Stack<int>>* tmp = curr;
+            Node<Stack<T>>* tmp = curr;
             if(!prev){
                 super.set_tail(curr->next);
             }else{
@@ -157,7 +158,7 @@ public:
     
     int get_size(){return size;}
 private:
-    Stack<Stack<int>> super;
+    Stack<Stack<T>> super;
     int capacity;
     int size;
 };  
