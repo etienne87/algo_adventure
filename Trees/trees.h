@@ -70,7 +70,7 @@ void print_graph(Node* node, bool dfs=true){
         
     }else{
         deque<Node*> queue;
-        queue.push_back(node);
+        queue.push_back(node); 
         while(!queue.empty()){
             Node* node = queue.front();
             queue.pop_front();
@@ -79,7 +79,98 @@ void print_graph(Node* node, bool dfs=true){
                 queue.push_back(val);
             }
         }
-        
     }
+}
+
+bool intersect(Node* rA, Node* rB){
+    unordered_set<Node*> hash;
+    deque<Node*> qA, qB;
+    qA.push_back(rA);
+    qB.push_back(rB);
+    while(!qA.empty() && !qB.empty()){
+        if(!qA.empty()){
+            Node* a = qA.front();  
+            if(hash.find(a) != hash.end())
+                return true;   
+            qA.pop_front();   
+            for(auto val: a->children){
+                qA.push_back(val);
+            }
+        }
+        
+        if(!qB.empty()){
+            Node* b = qB.front();  
+            if(hash.find(b) != hash.end())
+                return true;   
+            qB.pop_front();   
+            for(auto val: b->children){
+                qB.push_back(val);
+            }
+        }
+    }
+
+}
+
+void minimal_tree(vector<Node>& tree, int low=0, int high=-1){  
+    if(high < 0){
+        high = tree.size();
+    }
+    int middle = (low+high)/2; 
+    int left = (low+middle)/2;
+    int right = (middle+high)/2;
+    //std::cout<<"["<<low<<";"<<high<<"] | ["<<left<<" "<<middle<<" "<<right<<"]"<<std::endl;
+   
+    if(low < middle-2)
+        minimal_tree(tree, low, middle);
+    if(middle < high-2)
+        minimal_tree(tree, middle, high); 
+    if(left<middle)
+        tree[middle].children.push_back(&tree[left]);
+    if(middle<right)
+        tree[middle].children.push_back(&tree[right]); 
+}
+
+vector<vector<Node*>> list_depth(Node* root){
+    vector<vector<Node*>> levels;
+    deque<pair<int,Node*>> stack; 
+    stack.push_back(pair<int,Node*>(0,root));
+    while(!stack.empty()){
+        int level = stack.back().first;
+        Node* a = stack.back().second; 
+        if(level >= levels.size()){
+            vector<Node*> vec;
+            vec.push_back(a);
+            levels.push_back(vec);
+        }else{
+            levels[level].push_back(a);
+        }
+        stack.pop_back();   
+        for(auto val: a->children){
+            stack.push_back(pair<int,Node*>(level+1,val));
+        }
+    }
+    return levels;
+}
+
+void print_tree_by_levels(Node* root){
+    vector<vector<Node*>> levels = list_depth(root);
+    for(int i=0;i<levels.size();i++){
+        for(int j=0;j<levels[i].size();j++){
+            std::cout<<levels[i][j]->data<<",";
+        }
+        std::cout<<std::endl;
+    }
+}
+
+bool is_balanced(Node* root){
+    //1. reuse list_depth idea, len(list_depth[idx+1]) = 2 * len(list_depth[idx])
+}
+
+bool is_binary_search_tree(Node* root){
+    //1. reuse is_balanced + first half < second half?
+}
+
+Node* in_order_successor(Node* tmp){
+    //. in order is node/ left/ right
 }
 
