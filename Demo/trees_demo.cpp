@@ -42,6 +42,10 @@ int main(int argc, char* argv[]){
             }
             std::sort(array.begin(), array.end());
 
+            /* for(auto i: array)
+                std::cout<<i<<" ";
+            std::cout<<std::endl; */
+
             vector<Node> tree;
             tree.resize(array.size());
             for(int i=0;i<array.size();i++){

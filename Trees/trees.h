@@ -119,24 +119,25 @@ void minimal_tree(vector<Node>& tree, int low=0, int high=-1){
     int left = (low+middle)/2;
     int right = (middle+high)/2;
     //std::cout<<"["<<low<<";"<<high<<"] | ["<<left<<" "<<middle<<" "<<right<<"]"<<std::endl;
-   
-    if(low < middle-2)
-        minimal_tree(tree, low, middle);
-    if(middle < high-2)
-        minimal_tree(tree, middle, high); 
     if(left<middle)
         tree[middle].children.push_back(&tree[left]);
     if(middle<right)
         tree[middle].children.push_back(&tree[right]); 
+    if(low < middle-2)
+        minimal_tree(tree, low, middle);
+    if(middle < high-2)
+        minimal_tree(tree, middle, high); 
+    
 }
+
 
 vector<vector<Node*>> list_depth(Node* root){
     vector<vector<Node*>> levels;
-    deque<pair<int,Node*>> stack; 
-    stack.push_back(pair<int,Node*>(0,root));
-    while(!stack.empty()){
-        int level = stack.back().first;
-        Node* a = stack.back().second; 
+    deque<pair<int,Node*>> queue; 
+    queue.push_back(pair<int,Node*>(0,root));
+    while(!queue.empty()){
+        int level = queue.back().first;
+        Node* a = queue.back().second; 
         if(level >= levels.size()){
             vector<Node*> vec;
             vec.push_back(a);
@@ -144,9 +145,9 @@ vector<vector<Node*>> list_depth(Node* root){
         }else{
             levels[level].push_back(a);
         }
-        stack.pop_back();   
+        queue.pop_back();   
         for(auto val: a->children){
-            stack.push_back(pair<int,Node*>(level+1,val));
+            queue.push_front(pair<int,Node*>(level+1,val));
         }
     }
     return levels;
