@@ -163,8 +163,19 @@ void print_tree_by_levels(Node* root){
     }
 }
 
-bool is_balanced(Node* root){
-    //1. reuse list_depth idea, len(list_depth[idx+1]) = 2 * len(list_depth[idx])
+bool is_balanced(Node* tmp, int& count){
+    //2 subtrees at same levels are never different in size more than 1
+    //dfs
+    int cnt_left = 0, cnt_right = 0;
+    bool ck_left = true, ck_right = true;
+    if(tmp->children.size())
+        ck_left = is_balanced(tmp->children[0], cnt_left);
+    if(tmp->children.size()>1)
+        ck_right = is_balanced(tmp->children[1], cnt_right);
+    if(!ck_left || !ck_right || abs(cnt_left-cnt_right) > 1)
+        return false;
+    count += 1 + cnt_left + cnt_right;
+    return true;
 }
 
 bool is_binary_search_tree(Node* root){

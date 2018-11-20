@@ -22,8 +22,6 @@ int main(int argc, char* argv[]){
             std::cout<<"dfs: "<<std::endl;
             std::cout<<"==========="<<std::endl;
             print_graph(&graph[0], true);
-
-            auto levels = list_depth(&graph[0]);
         }
         if(exo == 1){
             vector<Node> graph = build_directed_graph();
@@ -35,7 +33,7 @@ int main(int argc, char* argv[]){
                 std::cout<<"a & b intersect"<<std::endl;
             }
         }
-        if(exo == 2 || exo == 3){
+        if(exo == 2 || exo == 3 || exo == 4){
             vector<int> array;
             for(int i=0;i<16;i++){
                 array.push_back(rand()%100);
@@ -54,6 +52,22 @@ int main(int argc, char* argv[]){
             minimal_tree(tree);
           
             print_tree_by_levels(&tree[tree.size()/2]);
+
+            int cnt = 0;
+            if(is_balanced(&tree[tree.size()/2], cnt)){
+                std::cout<<"is balanced!"<<std::endl;
+            }
+            //take out one children of children...
+            tree[tree.size()/2].children[0]->children[0]->children.pop_back();
+            tree[tree.size()/2].children[1]->children.pop_back();
+
+            cnt = 0;
+            if(is_balanced(&tree[tree.size()/2], cnt)){
+                std::cout<<"is balanced"<<std::endl;
+            }else{
+                std::cout<<"not balanced!"<<std::endl;
+            }
+
         }
        
     }catch(std::exception& e){
