@@ -2,12 +2,16 @@
 #include <cstdlib> 
 #include <cstring>
 #include <unordered_set>
+#include <unordered_map>
+#include <list>
 #include <vector>
 #include <deque>
 
 using std::vector;
 using std::pair;
+using std::list;
 using std::unordered_set;
+using std::unordered_map;
 using std::deque;
 
 struct Node
@@ -165,7 +169,6 @@ void print_tree_by_levels(Node* root){
 
 bool is_balanced(Node* tmp, int& count){
     //2 subtrees at same levels are never different in size more than 1
-    //dfs
     int cnt_left = 0, cnt_right = 0;
     bool ck_left = true, ck_right = true;
     if(tmp->children.size())
@@ -178,11 +181,96 @@ bool is_balanced(Node* tmp, int& count){
     return true;
 }
 
-bool is_binary_search_tree(Node* root){
-    //1. reuse is_balanced + first half < second half?
+bool is_bst(Node* tmp, int high){
+    bool ck_left = true, ck_right = true;
+    if(tmp->children.size()){
+        int left = tmp->children[0]->data;
+        if(left > tmp->data){
+            return false;
+        }
+        ck_left = is_bst(tmp->children[0], tmp->data);
+    }
+    if(tmp->children.size() > 1){
+        int right = tmp->children[1]->data;
+        if(right < tmp->data || right > high){
+            return false;
+        }
+        ck_right = is_bst(tmp->children[0], tmp->data);
+    }
+    return ck_right && ck_left;
 }
 
-Node* in_order_successor(Node* tmp){
-    //. in order is node/ left/ right
+
+struct Node2{
+    Node2(int d=0, Node2* ancestor=NULL):data(d){
+        left = right = NULL;
+        parent = ancestor;
+    }
+    Node2* left, *parent, *right;
+    int data;
+};
+
+//TODO:
+//check this works
+Node2* in_order_successor(Node2* tmp){
+    //. in order is left/ node/ right/
+    //. so if node->right, if left->parent, if right->right
+    bool is_left = false;
+    if(tmp->parent && tmp->parent->left == tmp)
+        return tmp->parent;
+    else
+        return tmp->right;
+}
+
+//TODO:
+//check this works
+Node2* find_common_ancestor(Node2* a, Node2* b){
+    Node2* pa = a, *pb = b;
+    while(pa != pb && pa && pb){
+        pa = pa->parent;
+        if(pa == pb)
+            return pa;
+        pb = pb->parent;
+        if(pa == pb)
+            return pb;
+    }
+    return NULL;
+}
+
+//TODO
+//built the graph while keeping track of the beginning of the queue?
+//exo: detect a cycle dependency
+vector<Node*> build_order(std::vector<pair<Node*,Node*>>& dependencies){
+    vector<Node*> vec;
+    Node* ancestor;
+    unordered_map<Node*, Node*> mmap; //child to parent
+    for(auto val: dependencies){
+        Node* a = val.first;
+        Node* b = val.second;
+        a->children.push_back(b);
+        unordered_map<Node*, Node*>::iterator it = mmap.find(b);
+        if(it == mmap.end()){
+            mmap.insert({a,b});
+        }else{
+            ancestor = a;
+        }
+    }
+    //at this point, all 
+    return vec;
+}
+
+//TODO
+//find all possible ways to traverse an array left to right leading 
+//to tree in argument
+vector<vector<int>> bst_sequence(Node* root){
+    vector<vector<int>> all_seq;
+    return all_seq;
+}
+
+//TODO
+//copy current node, perform traversal from here
+//of t2 & node.
+bool is_subtree(Node* t1, Node* t2){
+
 }
 
