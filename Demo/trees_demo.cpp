@@ -15,7 +15,7 @@ int main(int argc, char* argv[]){
 
     try{
         if(exo == 0){
-            vector<Node> tree = build_binary_tree();
+            auto tree = build_binary_tree();
             std::cout<<"bfs: "<<std::endl;
             std::cout<<"==========="<<std::endl;
             print_graph(&tree[0], false);
@@ -25,10 +25,10 @@ int main(int argc, char* argv[]){
             print_tree_by_levels(&tree[0]);
         }
         if(exo == 1){
-            vector<Node> graph = build_directed_graph();
+            auto graph = build_directed_graph();
             //Take 2 random node
-            Node* a = &graph[rand()%graph.size()];
-            Node* b = &graph[rand()%graph.size()];
+            auto* a = &graph[rand()%graph.size()];
+            auto* b = &graph[rand()%graph.size()];
             bool check = intersect(a, b);
             if(check){
                 std::cout<<"a & b intersect"<<std::endl;
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
                 std::cout<<i<<" ";
             std::cout<<std::endl; */
 
-            vector<Node> tree;
+            vector<iNode> tree;
             tree.resize(array.size());
             for(int i=0;i<array.size();i++){
                 tree[i].data = array[i];
@@ -77,6 +77,30 @@ int main(int argc, char* argv[]){
                 std::cout<<"not balanced!"<<std::endl;
             } */
 
+        }
+
+        if(exo == 6){
+            vector<string> projects;
+            projects.push_back("a");
+            projects.push_back("b");
+            projects.push_back("c");
+            projects.push_back("d");
+            projects.push_back("e");
+            projects.push_back("f");
+            vector<pair<string, string>> dependencies;
+            dependencies.push_back(pair<string,string>("a","d"));
+            dependencies.push_back(pair<string,string>("f","b"));
+            dependencies.push_back(pair<string,string>("b","d"));
+            dependencies.push_back(pair<string,string>("f","a"));
+            dependencies.push_back(pair<string,string>("d","c")); 
+            dependencies.push_back(pair<string,string>("e","")); 
+
+            auto res = build_order(projects, dependencies);
+
+            for(auto val: res){
+                std::cout<<val<<" ";
+            }
+            std::cout<<std::endl;
             
         }
        

@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <deque>
+#include <string>
 
 using std::vector;
 using std::pair;
@@ -13,13 +14,17 @@ using std::list;
 using std::unordered_set;
 using std::unordered_map;
 using std::deque;
+using std::string;
 
+template<class T>
 struct Node
 {
-    Node(int d=0):data(d){}
-    std::vector<Node*> children;
-    int data;
+    Node(T d=0):data(d){}
+    std::vector<Node<T>*> children;
+    T data;
 };
+typedef Node<int> iNode;
+typedef Node<string> sNode;
 
 struct pair_hash {
     inline std::size_t operator()(const std::pair<int,int> & v) const {
@@ -27,8 +32,8 @@ struct pair_hash {
     }
 };
 
-vector<Node> build_directed_graph(int size=10, int max_connect=3){
-    vector<Node> graph;
+vector<iNode> build_directed_graph(int size=10, int max_connect=3){
+    vector<iNode> graph;
     graph.resize(size);
     unordered_set<pair<int,int>, pair_hash> visited;
     for(int u=0;u<size;++u){
@@ -45,8 +50,8 @@ vector<Node> build_directed_graph(int size=10, int max_connect=3){
     return graph;
 }
 
-vector<Node> build_binary_tree(int size=10){
-    vector<Node> graph;
+vector<iNode> build_binary_tree(int size=10){
+    vector<iNode> graph;
     graph.resize(size);
     for(int i=0;i<size;i++){
         graph[i].data = i;
@@ -59,12 +64,12 @@ vector<Node> build_binary_tree(int size=10){
     return graph;
 }
 
-void print_graph(Node* node, bool dfs=true){
+void print_graph(iNode* node, bool dfs=true){
     if(dfs){
-        deque<Node*> stack;
+        deque<iNode*> stack;
         stack.push_front(node);
         while(!stack.empty()){
-            Node* node = stack.front();
+            iNode* node = stack.front();
             stack.pop_front();
             std::cout<<node->data<<std::endl;
             for(auto val: node->children){
@@ -73,10 +78,10 @@ void print_graph(Node* node, bool dfs=true){
         }
         
     }else{
-        deque<Node*> queue;
+        deque<iNode*> queue;
         queue.push_back(node); 
         while(!queue.empty()){
-            Node* node = queue.front();
+            iNode* node = queue.front();
             queue.pop_front();
             std::cout<<node->data<<std::endl;
             for(auto val: node->children){
@@ -86,14 +91,14 @@ void print_graph(Node* node, bool dfs=true){
     }
 }
 
-bool intersect(Node* rA, Node* rB){
-    unordered_set<Node*> hash;
-    deque<Node*> qA, qB;
+bool intersect(iNode* rA, iNode* rB){
+    unordered_set<iNode*> hash;
+    deque<iNode*> qA, qB;
     qA.push_back(rA);
     qB.push_back(rB);
     while(!qA.empty() && !qB.empty()){
         if(!qA.empty()){
-            Node* a = qA.front();  
+            iNode* a = qA.front();  
             if(hash.find(a) != hash.end())
                 return true;   
             qA.pop_front();   
@@ -103,7 +108,7 @@ bool intersect(Node* rA, Node* rB){
         }
         
         if(!qB.empty()){
-            Node* b = qB.front();  
+            iNode* b = qB.front();  
             if(hash.find(b) != hash.end())
                 return true;   
             qB.pop_front();   
@@ -115,7 +120,7 @@ bool intersect(Node* rA, Node* rB){
 
 }
 
-void minimal_tree(vector<Node>& tree, int low=0, int high=-1){  
+void minimal_tree(vector<iNode>& tree, int low=0, int high=-1){  
     if(high < 0){
         high = tree.size();
     }
@@ -135,15 +140,15 @@ void minimal_tree(vector<Node>& tree, int low=0, int high=-1){
 }
 
 
-vector<vector<Node*>> list_depth(Node* root){
-    vector<vector<Node*>> levels;
-    deque<pair<int,Node*>> queue; 
-    queue.push_back(pair<int,Node*>(0,root));
+vector<vector<iNode*>> list_depth(iNode* root){
+    vector<vector<iNode*>> levels;
+    deque<pair<int,iNode*>> queue; 
+    queue.push_back(pair<int,iNode*>(0,root));
     while(!queue.empty()){
         int level = queue.back().first;
-        Node* a = queue.back().second; 
+        iNode* a = queue.back().second; 
         if(level >= levels.size()){
-            vector<Node*> vec;
+            vector<iNode*> vec;
             vec.push_back(a);
             levels.push_back(vec);
         }else{
@@ -151,14 +156,14 @@ vector<vector<Node*>> list_depth(Node* root){
         }
         queue.pop_back();   
         for(auto val: a->children){
-            queue.push_front(pair<int,Node*>(level+1,val));
+            queue.push_front(pair<int,iNode*>(level+1,val));
         }
     }
     return levels;
 }
 
-void print_tree_by_levels(Node* root){
-    vector<vector<Node*>> levels = list_depth(root);
+void print_tree_by_levels(iNode* root){
+    vector<vector<iNode*>> levels = list_depth(root);
     for(int i=0;i<levels.size();i++){
         for(int j=0;j<levels[i].size();j++){
             std::cout<<levels[i][j]->data<<",";
@@ -167,7 +172,7 @@ void print_tree_by_levels(Node* root){
     }
 }
 
-bool is_balanced(Node* tmp, int& count){
+bool is_balanced(iNode* tmp, int& count){
     //2 subtrees at same levels are never different in size more than 1
     int cnt_left = 0, cnt_right = 0;
     bool ck_left = true, ck_right = true;
@@ -181,7 +186,7 @@ bool is_balanced(Node* tmp, int& count){
     return true;
 }
 
-bool is_bst(Node* tmp, int high){
+bool is_bst(iNode* tmp, int high){
     bool ck_left = true, ck_right = true;
     if(tmp->children.size()){
         int left = tmp->children[0]->data;
@@ -237,32 +242,60 @@ Node2* find_common_ancestor(Node2* a, Node2* b){
     return NULL;
 }
 
-//TODO
-//built the graph while keeping track of the beginning of the queue?
-//exo: detect a cycle dependency
-vector<Node*> build_order(std::vector<pair<Node*,Node*>>& dependencies){
-    vector<Node*> vec;
-    Node* ancestor;
-    unordered_map<Node*, Node*> mmap; //child to parent
-    for(auto val: dependencies){
-        Node* a = val.first;
-        Node* b = val.second;
-        a->children.push_back(b);
-        unordered_map<Node*, Node*>::iterator it = mmap.find(b);
-        if(it == mmap.end()){
-            mmap.insert({a,b});
-        }else{
-            ancestor = a;
+
+vector<string> build_order(vector<string> vec, vector<pair<string, string>> map){
+    vector<string> ordered;
+    unordered_map<string, sNode> nodes;
+    for(auto val: vec){
+        auto a = sNode(val);
+        nodes.insert(pair<string, sNode>(val, a));
+    }
+    sNode* root = NULL;
+    for(auto val: map){
+        string a = val.first;
+        string b = val.second;
+        
+        auto node1 = &nodes.find(a)->second;
+        auto node2 = &nodes.find(b)->second;
+        node1->children.push_back(node2);
+        
+        if(root == NULL || root == node2){
+            root = node1;
+        }
+    }  
+    //NOW: BFS
+    deque<sNode*> queue;
+    queue.push_back(root);
+    
+    unordered_set<string> inside;
+    
+    while(!queue.empty()){
+        sNode* node = queue.front();
+
+        if( inside.find(node->data) == inside.end()){
+            inside.insert(node->data);
+            ordered.push_back(node->data);
+        }
+
+        queue.pop_front();
+        for(auto val: node->children){
+            queue.push_back(val);
         }
     }
-    //at this point, all 
-    return vec;
+    for(auto val: vec){
+        if( inside.find(val) == inside.end()){
+            ordered.push_back(val);
+        }
+    }
+    
+    
+    return ordered;
 }
 
 //TODO
 //find all possible ways to traverse an array left to right leading 
 //to tree in argument
-vector<vector<int>> bst_sequence(Node* root){
+vector<vector<int>> bst_sequence(iNode* root){
     vector<vector<int>> all_seq;
     return all_seq;
 }
@@ -270,7 +303,7 @@ vector<vector<int>> bst_sequence(Node* root){
 //TODO
 //copy current node, perform traversal from here
 //of t2 & node.
-bool is_subtree(Node* t1, Node* t2){
+bool is_subtree(iNode* t1, iNode* t2){
 
 }
 
