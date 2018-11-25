@@ -112,9 +112,20 @@ int main(int argc, char* argv[]){
             if(is_subtree(root, subtree)){
                 std::cout<<"is subtree indeed"<<std::endl;
             }
-
         }
        
+        if(exo == 8){
+            auto tree = build_binary_tree(32, true);
+            auto* root = &tree[0];
+
+            for(auto val: tree)
+                std::cout<<val.data<<" ";
+            std::cout<<std::endl;
+            
+            int sum = 3;
+            int npaths = count_paths_sum(root, 0, sum);
+            std::cout<<"num paths: "<<npaths<<std::endl;
+        }
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }

@@ -63,11 +63,14 @@ vector<iNode> build_directed_graph(int size=10, int max_connect=3){
     return graph;
 }
 
-vector<iNode> build_binary_tree(int size=10){
+vector<iNode> build_binary_tree(int size=10, bool random=false, int max_val=2){
     vector<iNode> graph;
     graph.resize(size);
     for(int i=0;i<size;i++){
-        graph[i].data = i;
+        if(random)
+            graph[i].data = rand()%max_val;
+        else
+            graph[i].data = i;
         if(2*i+1 < size)
             graph[i].children.push_back(&graph[2*i+1]);
         if(2*i+2 < size)
@@ -413,3 +416,16 @@ private:
     vector<int> nodes;
 };
 
+int count_paths_sum(iNode* root, int partial_sum, int ref_sum){
+    int num_paths = 0;
+    if(!root)
+        return num_paths;
+    partial_sum += root->data;
+    if(partial_sum == ref_sum){
+        num_paths += 1;
+    }
+    for(auto child: root->children)
+        num_paths += count_paths_sum(child, partial_sum, ref_sum);
+
+    return num_paths;
+}
