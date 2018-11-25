@@ -103,6 +103,17 @@ int main(int argc, char* argv[]){
             std::cout<<std::endl;
             
         }
+
+        if(exo == 7){
+            auto tree = build_binary_tree(16);
+            auto* root = &tree[0];
+            auto* subtree = &tree[6];
+
+            if(is_subtree(root, subtree)){
+                std::cout<<"is subtree indeed"<<std::endl;
+            }
+
+        }
        
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;

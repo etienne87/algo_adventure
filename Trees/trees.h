@@ -7,6 +7,7 @@
 #include <vector>
 #include <deque>
 #include <string>
+#include <cmath>
 
 using std::vector;
 using std::pair;
@@ -31,6 +32,18 @@ struct pair_hash {
         return v.first*31+v.second;
     }
 };
+
+//more specialized node with parent node
+template<class T>
+struct BTNode{
+    BTNode(T d=0, BTNode* ancestor=NULL):data(d){
+        left = right = NULL;
+        parent = ancestor;
+    }
+    BTNode<T>* left, *parent, *right;
+    T data;
+};
+
 
 vector<iNode> build_directed_graph(int size=10, int max_connect=3){
     vector<iNode> graph;
@@ -205,19 +218,10 @@ bool is_bst(iNode* tmp, int high){
     return ck_right && ck_left;
 }
 
-
-struct Node2{
-    Node2(int d=0, Node2* ancestor=NULL):data(d){
-        left = right = NULL;
-        parent = ancestor;
-    }
-    Node2* left, *parent, *right;
-    int data;
-};
-
 //TODO:
 //check this works
-Node2* in_order_successor(Node2* tmp){
+template<class T>
+BTNode<T>* in_order_successor(BTNode<T>* tmp){
     //. in order is left/ node/ right/
     //. so if node->right, if left->parent, if right->right
     bool is_left = false;
@@ -229,8 +233,9 @@ Node2* in_order_successor(Node2* tmp){
 
 //TODO:
 //check this works
-Node2* find_common_ancestor(Node2* a, Node2* b){
-    Node2* pa = a, *pb = b;
+template<class T>
+BTNode<T>* find_common_ancestor(BTNode<T>* a, BTNode<T>* b){
+    BTNode<T>* pa = a, *pb = b;
     while(pa != pb && pa && pb){
         pa = pa->parent;
         if(pa == pb)
@@ -292,18 +297,119 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> map)
     return ordered;
 }
 
-//TODO
-//find all possible ways to traverse an array left to right leading 
-//to tree in argument
+
 vector<vector<int>> bst_sequence(iNode* root){
     vector<vector<int>> all_seq;
+    //all we need is run bfs, each level we generate 2**N permutations and add them.
+    auto list =  list_depth(root);
     return all_seq;
 }
 
-//TODO
-//copy current node, perform traversal from here
-//of t2 & node.
-bool is_subtree(iNode* t1, iNode* t2){
-
+bool equal(iNode* t1, iNode* t2){
+    if(t1->data == t2->data && t1->children.size() == t2->children.size()){
+        bool check = true;
+        for(int i=0;i<t1->children.size();i++){
+            check &= equal(t1->children[i], t2->children[i]);
+        }
+        return check;
+    }else{
+        return false;
+    }
 }
+
+bool is_subtree(iNode* t1, iNode* t2){
+    if(!t1)
+        return false;
+    if(equal(t1, t2)){
+        return true;
+    }
+    else{
+        bool check = false;
+        for(auto val: t1->children){
+            check |= is_subtree(val, t2);
+        }
+        return check;
+    }
+}
+
+//Array Implementation
+//Allows to retrieve a random node
+//getLeftChild(idx) = 2*idx + 1
+//getRightChild(idx) = 2*idx + 2
+class BinaryTree{
+public:
+    BinaryTree(int data, int capacity=16){
+        nodes.reserve(capacity);
+        nodes[0] = data;
+    }
+    int findNode(int data){
+        //run dfs
+        deque<int> stack;
+        stack.push_back(0);
+        while(!stack.empty()){
+            int idx = stack.back();
+            stack.pop_back();
+            if(idx > 0){
+                if(nodes[idx] == data){
+                    return idx;
+                }
+                int left = getLeftChild(idx);
+                int right = getRightChild(idx);
+                if(left)
+                    stack.push_back(left);
+                if(right)
+                    stack.push_back(right);
+            }
+        }
+    }
+    int deleteNode(int idx){
+        int parent = std::floor(float(idx-1)/2);
+        if(parent==-1)
+            nodes.resize(0);
+        else{
+            int left = getLeftChild(parent);
+            int right = getRightChild(parent);
+            if( ((left == idx) && (right < 0)) ||
+                ((left == idx) && (right < 0))){
+                nodes.resize(parent);
+            }
+        }
+    }
+    int getRandomNode(){
+        return nodes[rand()%nodes.size()];
+    }
+    int insertLeft(int idx, int data){
+        int left = getLeftChild(idx);
+        if(left < 0){
+            nodes.resize(nodes.capacity()*2);
+        }
+        nodes[left] = data;
+        return left;
+    }
+    int insertRight(int idx, int data){
+        int right = getRightChild(idx);
+        if(right < 0){
+            nodes.resize(nodes.capacity()*2);
+        }
+        nodes[right] = data;
+        return right;
+    }
+    int getLeftChild(int idx){
+        int index = 2 * idx + 1;
+        if(index < nodes.size())
+            return index;
+        else
+            return -1;
+    }
+    int getRightChild(int idx){
+        int index = 2 * idx + 2;
+        if(index < nodes.size())
+            return index;
+        else
+            return -1;
+    }
+
+private:
+    vector<int> nodes;
+};
 
