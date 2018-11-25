@@ -11,6 +11,7 @@ add_executable (ArrayDemo array_demo.cpp)
 add_executable (ListsDemo lists_demo.cpp)
 add_executable (StacksDemo stacks_demo.cpp)
 add_executable (TreesDemo trees_demo.cpp)
+add_executable (BitwiseDemo bitwise_demo.cpp)
 
 target_link_libraries (SortExoDemo LINK_PUBLIC Sort)
 target_link_libraries (SortDemo LINK_PUBLIC Sort)
@@ -18,3 +19,4 @@ target_link_libraries (ArrayDemo LINK_PUBLIC opencv_core opencv_highgui opencv_i
 target_link_libraries (ListsDemo LINK_PUBLIC Lists)
 target_link_libraries (StacksDemo LINK_PUBLIC Stacks)
 target_link_libraries (TreesDemo LINK_PUBLIC Trees)
+target_link_libraries (BitwiseDemo LINK_PUBLIC Bitwise)
