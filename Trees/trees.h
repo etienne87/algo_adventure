@@ -43,6 +43,7 @@ struct BTNode{
     BTNode<T>* left, *parent, *right;
     T data;
 };
+typedef BTNode<int> iBTNode;
 
 
 vector<iNode> build_directed_graph(int size=10, int max_connect=3){
@@ -78,6 +79,23 @@ vector<iNode> build_binary_tree(int size=10, bool random=false, int max_val=2){
     }
 
     return graph;
+}
+
+vector<iBTNode> build_real_binary_tree(int size=10, bool random=false, int max_val=2){
+    vector<iBTNode> tree;
+    tree.resize(size);
+    for(int i=0;i<size;i++){
+        if(random)
+            tree[i].data = rand()%max_val;
+        else
+            tree[i].data = i;
+        if(2*i+1 < size)
+            tree[i].left = &tree[2*i+1];
+        if(2*i+2 < size)
+            tree[i].right = &tree[2*i+1];
+    }
+
+    return tree;
 }
 
 void print_graph(iNode* node, bool dfs=true){
@@ -146,7 +164,7 @@ bool intersect(iNode* rA, iNode* rB){
     return false;
 }
 
-void minimal_tree(vector<iNode>& tree, int low=0, int high=-1){  
+void minimal_tree(vector<iBTNode>& tree, int low=0, int high=-1){  
     if(high < 0){
         high = tree.size();
     }
@@ -155,9 +173,9 @@ void minimal_tree(vector<iNode>& tree, int low=0, int high=-1){
     int right = (middle+high)/2;
     //std::cout<<"["<<low<<";"<<high<<"] | ["<<left<<" "<<middle<<" "<<right<<"]"<<std::endl;
     if(left<middle)
-        tree[middle].children.push_back(&tree[left]);
+        tree[middle].left = &tree[left];
     if(middle<right)
-        tree[middle].children.push_back(&tree[right]); 
+        tree[middle].right = &tree[right];
     if(low < middle-2)
         minimal_tree(tree, low, middle);
     if(middle < high-2)
@@ -165,8 +183,41 @@ void minimal_tree(vector<iNode>& tree, int low=0, int high=-1){
     
 }
 
+vector<vector<iBTNode*>> tree_list_depth(iBTNode* root){
+    vector<vector<iBTNode*>> levels;
+    deque<pair<int,iBTNode*>> queue; 
+    queue.push_back(pair<int,iBTNode*>(0,root));
+    while(!queue.empty()){
+        int level = queue.back().first;
+        iBTNode* a = queue.back().second; 
+        if(level >= levels.size()){
+            vector<iBTNode*> vec;
+            vec.push_back(a);
+            levels.push_back(vec);
+        }else{
+            levels[level].push_back(a);
+        }
+        queue.pop_back();   
+        if(a->left)
+            queue.push_front(pair<int,iBTNode*>(level+1, a->left));
+        if(a->right)
+            queue.push_front(pair<int,iBTNode*>(level+1, a->right));
+    }
+    return levels;
+}
 
-vector<vector<iNode*>> list_depth(iNode* root){
+void print_tree_by_levels(iBTNode* root){
+    vector<vector<iBTNode*>> levels = tree_list_depth(root);
+    for(int i=0;i<levels.size();i++){
+        for(int j=0;j<levels[i].size();j++){
+            std::cout<<levels[i][j]->data<<",";
+        }
+        std::cout<<std::endl;
+    }
+}
+
+//general implementation for any graph
+vector<vector<iNode*>> graph_list_depth(iNode* root){
     vector<vector<iNode*>> levels;
     deque<pair<int,iNode*>> queue; 
     queue.push_back(pair<int,iNode*>(0,root));
@@ -188,8 +239,8 @@ vector<vector<iNode*>> list_depth(iNode* root){
     return levels;
 }
 
-void print_tree_by_levels(iNode* root){
-    vector<vector<iNode*>> levels = list_depth(root);
+void print_graph_by_levels(iNode* root){
+    vector<vector<iNode*>> levels = graph_list_depth(root);
     for(int i=0;i<levels.size();i++){
         for(int j=0;j<levels[i].size();j++){
             std::cout<<levels[i][j]->data<<",";
@@ -314,7 +365,7 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> map)
 vector<vector<int>> bst_sequence(iNode* root){
     vector<vector<int>> all_seq;
     //all we need is run bfs, each level we generate 2**N permutations and add them.
-    auto list =  list_depth(root);
+    auto list =  graph_list_depth(root);
     return all_seq;
 }
 

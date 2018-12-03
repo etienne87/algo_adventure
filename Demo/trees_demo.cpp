@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
             std::cout<<"dfs: "<<std::endl;
             std::cout<<"==========="<<std::endl;
             print_graph(&tree[0], true);
-            print_tree_by_levels(&tree[0]);
+            print_graph_by_levels(&tree[0]);
         }
         if(exo == 1){
             auto graph = build_directed_graph();
@@ -51,11 +51,7 @@ int main(int argc, char* argv[]){
             }
             std::sort(array.begin(), array.end());
 
-            /* for(auto i: array)
-                std::cout<<i<<" ";
-            std::cout<<std::endl; */
-
-            vector<iNode> tree;
+            vector<iBTNode> tree;
             tree.resize(array.size());
             for(int i=0;i<array.size();i++){
                 tree[i].data = array[i];
@@ -64,17 +60,17 @@ int main(int argc, char* argv[]){
           
             print_tree_by_levels(&tree[tree.size()/2]);
 
-            int cnt = 0;
+            //int cnt = 0;
             //if(is_balanced(&tree[tree.size()/2], cnt)){
             //    std::cout<<"is balanced!"<<std::endl;
             //} 
 
-            cnt = 0;
+            /* cnt = 0;
             if(is_bst(&tree[tree.size()/2], 10000)){
                 std::cout<<"is a binary search tree"<<std::endl;
             }else{
                 std::cout<<"not a bst"<<std::endl;
-            }
+            } */
 
             //take out one children of children...
             /* tree[tree.size()/2].children[0]->children[0]->children.pop_back();
