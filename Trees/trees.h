@@ -549,6 +549,10 @@ private:
 };
 
 int count_paths_sum(iNode* root, int partial_sum, int ref_sum){
+    /*comment to better understand my code:
+        - each time partial sum = ref sum, we increment num_paths & return it
+        - we run this recursively (dfs) for every children
+    */
     int num_paths = 0;
     if(!root)
         return num_paths;
