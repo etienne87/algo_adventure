@@ -92,7 +92,7 @@ vector<iBTNode> build_real_binary_tree(int size=10, bool random=false, int max_v
         if(2*i+1 < size)
             tree[i].left = &tree[2*i+1];
         if(2*i+2 < size)
-            tree[i].right = &tree[2*i+1];
+            tree[i].right = &tree[2*i+2];
     }
 
     return tree;
@@ -348,6 +348,12 @@ BTNode<T>* find_common_ancestor(BTNode<T>* a, BTNode<T>* b){
 
 
 vector<string> build_order(vector<string> vec, vector<pair<string, string>> map){
+    /* some comment here to better understand my own code :
+       1. build a map name: node<string>
+       2. build the graph, find root 
+       (if root is a tail, root become the current head given by list of dependencies)
+       3. parse the graph breadth-first, starting from root with an hash to avoid any duplications.
+    */
     vector<string> ordered;
     unordered_map<string, sNode> nodes;
     for(auto val: vec){
@@ -396,7 +402,9 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> map)
     return ordered;
 }
 
-
+//TODO: 
+//by level, any permutation could have lead to the same binary tree.
+//some we need to retrieve nodes by levels, & generate any permutation?
 vector<vector<int>> bst_sequence(iNode* root){
     vector<vector<int>> all_seq;
     //all we need is run bfs, each level we generate 2**N permutations and add them.
@@ -404,11 +412,39 @@ vector<vector<int>> bst_sequence(iNode* root){
     return all_seq;
 }
 
-bool equal(iNode* t1, iNode* t2){
+bool tree_equal(iBTNode* t1, iBTNode* t2){
+    if(t1 == NULL && t2 == NULL)
+        return true;
+    if(t1->data == t2->data){
+        bool check = true;
+        check &= tree_equal(t1->left, t2->left);
+        check &= tree_equal(t1->right, t2->right);
+        return check;
+    }else{
+        return false;
+    }
+}
+
+bool is_subtree(iBTNode* t1, iBTNode* t2){
+    if(!t1){
+        return false;
+    }
+    if(tree_equal(t1, t2)){
+        return true;
+    }
+    else{
+        bool check = false;
+        check |= is_subtree(t1->left, t2);
+        check |= is_subtree(t1->right, t2);
+        return check;
+    }
+}
+
+bool graph_equal(iNode* t1, iNode* t2){
     if(t1->data == t2->data && t1->children.size() == t2->children.size()){
         bool check = true;
         for(int i=0;i<t1->children.size();i++){
-            check &= equal(t1->children[i], t2->children[i]);
+            check &= graph_equal(t1->children[i], t2->children[i]);
         }
         return check;
     }else{
@@ -416,16 +452,16 @@ bool equal(iNode* t1, iNode* t2){
     }
 }
 
-bool is_subtree(iNode* t1, iNode* t2){
+bool is_subgraph(iNode* t1, iNode* t2){
     if(!t1)
         return false;
-    if(equal(t1, t2)){
+    if(graph_equal(t1, t2)){
         return true;
     }
     else{
         bool check = false;
         for(auto val: t1->children){
-            check |= is_subtree(val, t2);
+            check |= is_subgraph(val, t2);
         }
         return check;
     }

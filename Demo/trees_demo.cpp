@@ -100,12 +100,16 @@ int main(int argc, char* argv[]){
         }
 
         if(exo == 7){
-            auto tree = build_binary_tree(16);
+            auto tree = build_real_binary_tree(16);
             auto* root = &tree[0];
-            auto* subtree = &tree[6];
+            auto* subtree = &tree[2];
+            
+            print_tree_by_levels(&tree[0]);
 
             if(is_subtree(root, subtree)){
                 std::cout<<"is subtree indeed"<<std::endl;
+            }else{
+                std::cout<<"not a subtree"<<std::endl;
             }
         }
        
