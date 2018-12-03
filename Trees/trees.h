@@ -108,32 +108,42 @@ void print_graph(iNode* node, bool dfs=true){
 }
 
 bool intersect(iNode* rA, iNode* rB){
-    unordered_set<iNode*> hash;
+    unordered_set<iNode*> hA, hB;
     deque<iNode*> qA, qB;
     qA.push_back(rA);
     qB.push_back(rB);
-    while(!qA.empty() && !qB.empty()){
+    while(!qA.empty() || !qB.empty()){
+        iNode* a=NULL, *b=NULL;
         if(!qA.empty()){
-            iNode* a = qA.front();  
-            if(hash.find(a) != hash.end())
-                return true;   
+            a = qA.front();
+            if(hB.find(a) == hB.end()){
+                hA.insert(a);
+            }else{
+                return true;
+            }
             qA.pop_front();   
             for(auto val: a->children){
-                qA.push_back(val);
+                if(hA.find(val) == hA.end())
+                    qA.push_back(val);
             }
         }
-        
         if(!qB.empty()){
-            iNode* b = qB.front();  
-            if(hash.find(b) != hash.end())
-                return true;   
+            b = qB.front();  
+            if(hA.find(b) == hA.end()){
+                hB.insert(b);
+            }else{
+                return true;
+            }
             qB.pop_front();   
             for(auto val: b->children){
-                qB.push_back(val);
+                if(hB.find(val) == hB.end())
+                    qB.push_back(val);
             }
         }
+        if(a == b)
+            return true;
     }
-
+    return false;
 }
 
 void minimal_tree(vector<iNode>& tree, int low=0, int high=-1){  

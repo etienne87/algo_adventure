@@ -26,12 +26,22 @@ int main(int argc, char* argv[]){
         }
         if(exo == 1){
             auto graph = build_directed_graph();
+            auto graph2 = build_directed_graph();
             //Take 2 random node
-            auto* a = &graph[rand()%graph.size()];
-            auto* b = &graph[rand()%graph.size()];
+            auto* a = &graph[0];
+            auto* b = &graph[7];
+            auto* c = &graph2[0];
             bool check = intersect(a, b);
+            bool check2 = intersect(a, c);
             if(check){
                 std::cout<<"a & b intersect"<<std::endl;
+            }else{
+                std::cout<<"a & b do not intersect"<<std::endl;
+            }
+            if(check2){
+                std::cout<<"a & c intersect"<<std::endl;
+            }else{
+                std::cout<<"a & c do not intersect"<<std::endl;
             }
         }
         if(exo == 2 || exo == 3 || exo == 4 || exo == 5){
