@@ -216,6 +216,41 @@ void print_tree_by_levels(iBTNode* root){
     }
 }
 
+bool is_tree_balanced(iBTNode* tmp, int& count){
+    //2 subtrees at same levels are never different in size more than 1
+    int cnt_left = 0, cnt_right = 0;
+    bool ck_left = true, ck_right = true;
+    if(tmp->left)
+        ck_left = is_tree_balanced(tmp->left, cnt_left);
+    if(tmp->right)
+        ck_right = is_tree_balanced(tmp->right, cnt_right);
+    if(!ck_left || !ck_right || abs(cnt_left-cnt_right) > 1)
+        return false;
+    count += 1 + cnt_left + cnt_right;
+    return true;
+}
+
+bool is_tree_bst(iBTNode* tmp, int high){
+    bool ck_left = true, ck_right = true;
+    if(tmp->left){
+        int left = tmp->left->data;
+        if(left > tmp->data){
+            return false;
+        }
+        ck_left = is_tree_bst(tmp->left, tmp->data);
+    }
+    if(tmp->right){
+        int right = tmp->right->data;
+        if(right < tmp->data || right > high){
+            std::cout<<(right < tmp->data)<<" "<<(right > high)<<std::endl;
+            return false;
+        }
+        ck_right = is_tree_bst(tmp->right, high);
+    }
+    return ck_right && ck_left;
+}
+
+
 //general implementation for any graph
 vector<vector<iNode*>> graph_list_depth(iNode* root){
     vector<vector<iNode*>> levels;
@@ -249,35 +284,35 @@ void print_graph_by_levels(iNode* root){
     }
 }
 
-bool is_balanced(iNode* tmp, int& count){
+bool is_graph_balanced(iNode* tmp, int& count){
     //2 subtrees at same levels are never different in size more than 1
     int cnt_left = 0, cnt_right = 0;
     bool ck_left = true, ck_right = true;
     if(tmp->children.size())
-        ck_left = is_balanced(tmp->children[0], cnt_left);
+        ck_left = is_graph_balanced(tmp->children[0], cnt_left);
     if(tmp->children.size()>1)
-        ck_right = is_balanced(tmp->children[1], cnt_right);
+        ck_right = is_graph_balanced(tmp->children[1], cnt_right);
     if(!ck_left || !ck_right || abs(cnt_left-cnt_right) > 1)
         return false;
     count += 1 + cnt_left + cnt_right;
     return true;
 }
 
-bool is_bst(iNode* tmp, int high){
+bool is_graph_bst(iNode* tmp, int high){
     bool ck_left = true, ck_right = true;
     if(tmp->children.size()){
         int left = tmp->children[0]->data;
         if(left > tmp->data){
             return false;
         }
-        ck_left = is_bst(tmp->children[0], tmp->data);
+        ck_left = is_graph_bst(tmp->children[0], tmp->data);
     }
     if(tmp->children.size() > 1){
         int right = tmp->children[1]->data;
         if(right < tmp->data || right > high){
             return false;
         }
-        ck_right = is_bst(tmp->children[0], tmp->data);
+        ck_right = is_graph_bst(tmp->children[1], high);
     }
     return ck_right && ck_left;
 }

@@ -60,28 +60,17 @@ int main(int argc, char* argv[]){
           
             print_tree_by_levels(&tree[tree.size()/2]);
 
-            //int cnt = 0;
-            //if(is_balanced(&tree[tree.size()/2], cnt)){
-            //    std::cout<<"is balanced!"<<std::endl;
-            //} 
-
-            /* cnt = 0;
-            if(is_bst(&tree[tree.size()/2], 10000)){
-                std::cout<<"is a binary search tree"<<std::endl;
-            }else{
-                std::cout<<"not a bst"<<std::endl;
-            } */
-
-            //take out one children of children...
-            /* tree[tree.size()/2].children[0]->children[0]->children.pop_back();
-            tree[tree.size()/2].children[1]->children.pop_back();
+            int cnt = 0;
+            if(is_tree_balanced(&tree[tree.size()/2], cnt)){
+                std::cout<<"is balanced!"<<std::endl;
+            } 
 
             cnt = 0;
-            if(is_balanced(&tree[tree.size()/2], cnt)){
-                std::cout<<"is balanced"<<std::endl;
+            if(is_tree_bst(&tree[tree.size()/2], 10000)){
+                std::cout<<"is a binary search tree!"<<std::endl;
             }else{
-                std::cout<<"not balanced!"<<std::endl;
-            } */
+                std::cout<<"not a bst"<<std::endl;
+            } 
 
         }
 
