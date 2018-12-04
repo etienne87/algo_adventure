@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <cstdlib> 
 #include <cstring>
 #include <unordered_set>
@@ -402,6 +403,48 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> map)
     return ordered;
 }
 
+/* int swap(char* a, char* b){
+    char tmp = *b;
+    *b = *a;
+    *a = tmp;
+}
+
+void permute(char* s, int l, int r){
+    if(l==r)
+        printf("%s\n", s); //print entire word
+    else{
+        for(int i=l;i<=r;i++){
+            swap(&s[l], &s[i]);
+            permute(s, l+1, r);
+            swap(&s[l], &s[i]); //backtrack
+        }
+    }
+} */
+
+template<class T>
+void swap(T* a, T* b){
+    T tmp = *b;
+    *b = *a;
+    *a = tmp;
+}
+
+template<class T>
+void permute(T* s, int l, int r){
+    if(l==r){
+        for(int i=0;i<=r;i++){
+            std::cout<<s[i]<<",";
+        }
+        std::cout<<std::endl;
+    }
+    else{
+        for(int i=l;i<=r;i++){
+            swap(&s[l], &s[i]);
+            permute(s, l+1, r);
+            swap(&s[l], &s[i]); //backtrack
+        }
+    }
+}
+
 //TODO: 
 //by level, any permutation could have lead to the same binary tree.
 //some we need to retrieve nodes by levels, & generate any permutation?
@@ -409,6 +452,12 @@ vector<vector<int>> bst_sequence(iNode* root){
     vector<vector<int>> all_seq;
     //all we need is run bfs, each level we generate 2**N permutations and add them.
     auto list =  graph_list_depth(root);
+    for(auto vec: list){
+        vector<int> vals;
+        for(auto val: vec)
+            vals.push_back(val->data);
+        permute(&vals[0], 0, vec.size()-1);
+    }
     return all_seq;
 }
 

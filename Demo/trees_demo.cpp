@@ -125,6 +125,14 @@ int main(int argc, char* argv[]){
             int npaths = count_paths_sum(root, 0, sum);
             std::cout<<"num paths: "<<npaths<<std::endl;
         }
+
+        if(exo == 9){
+            std::string test = "ABC";
+            permute<char>(&test[0], 0, 2);
+
+            auto tree = build_binary_tree(7, true, 32);
+            bst_sequence(&tree[0]);
+        }
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }
