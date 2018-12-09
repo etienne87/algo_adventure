@@ -9,6 +9,8 @@
 #include <deque>
 #include <string>
 #include <cmath>
+#include <climits>
+
 
 using std::vector;
 using std::pair;
@@ -37,9 +39,10 @@ struct pair_hash {
 //more specialized node with parent node
 template<class T>
 struct BTNode{
-    BTNode(T d=0, BTNode* ancestor=NULL):data(d){
-        left = right = NULL;
-        parent = ancestor;
+    BTNode(T d=0, BTNode* l=NULL, BTNode* r=NULL, BTNode* p=NULL):data(d){
+       left = l;
+       right = r;
+       parent = p;
     }
     BTNode<T>* left, *parent, *right;
     T data;
@@ -186,24 +189,23 @@ void minimal_tree(vector<iBTNode>& tree, int low=0, int high=-1){
 
 vector<vector<iBTNode*>> tree_list_depth(iBTNode* root){
     vector<vector<iBTNode*>> levels;
-    deque<pair<int,iBTNode*>> queue; 
-    queue.push_back(pair<int,iBTNode*>(0,root));
+    //simpler to explain
+    deque<iBTNode*> queue;
+    queue.push_front(root);
     while(!queue.empty()){
-        int level = queue.back().first;
-        iBTNode* a = queue.back().second; 
-        if(level >= levels.size()){
-            vector<iBTNode*> vec;
-            vec.push_back(a);
-            levels.push_back(vec);
-        }else{
-            levels[level].push_back(a);
+        vector<iBTNode*> level; 
+        int len = queue.size();  
+        for(int i=0;i<len;i++){
+            auto* node = queue.back();
+            queue.pop_back();
+            level.push_back(node);
+            if(node->left)
+                queue.push_front(node->left);
+            if(node->right)
+                queue.push_front(node->right);
         }
-        queue.pop_back();   
-        if(a->left)
-            queue.push_front(pair<int,iBTNode*>(level+1, a->left));
-        if(a->right)
-            queue.push_front(pair<int,iBTNode*>(level+1, a->right));
-    }
+        levels.push_back(level);
+    } 
     return levels;
 }
 
@@ -217,38 +219,47 @@ void print_tree_by_levels(iBTNode* root){
     }
 }
 
-bool is_tree_balanced(iBTNode* tmp, int& count){
-    //2 subtrees at same levels are never different in size more than 1
-    int cnt_left = 0, cnt_right = 0;
-    bool ck_left = true, ck_right = true;
+bool is_tree_balanced(iBTNode* tmp, int& depth){
+    if(!tmp)
+        return true;
+    int depth_left = 0, depth_right = 0;
     if(tmp->left)
-        ck_left = is_tree_balanced(tmp->left, cnt_left);
+        if(!is_tree_balanced(tmp->left, ++depth_left))
+            return false;
     if(tmp->right)
-        ck_right = is_tree_balanced(tmp->right, cnt_right);
-    if(!ck_left || !ck_right || abs(cnt_left-cnt_right) > 1)
+        if(!is_tree_balanced(tmp->right, ++depth_right))
+            return false;
+    if(abs(depth_left-depth_right) > 1)
         return false;
-    count += 1 + cnt_left + cnt_right;
+    depth += std::max(depth_left, depth_right);
     return true;
 }
 
-bool is_tree_bst(iBTNode* tmp, int high){
-    bool ck_left = true, ck_right = true;
-    if(tmp->left){
-        int left = tmp->left->data;
-        if(left > tmp->data){
-            return false;
-        }
-        ck_left = is_tree_bst(tmp->left, tmp->data);
-    }
+bool is_tree_bst(iBTNode* tmp, int low=INT_MIN, int high=INT_MAX){
+    //std::cout<<"range: ["<<low<<";"<<high<<"]"<<std::endl;
+    int data = tmp->data;
     if(tmp->right){
         int right = tmp->right->data;
-        if(right < tmp->data || right > high){
-            std::cout<<(right < tmp->data)<<" "<<(right > high)<<std::endl;
+        if(right >= low && right <= high && right >= data){
+            if(!is_tree_bst(tmp->right, data, high))
+                return false;
+        }else{
+            //std::cout<<"["<<low<<";"<<high<<"] -> right: "<<right<<std::endl;
             return false;
         }
-        ck_right = is_tree_bst(tmp->right, high);
     }
-    return ck_right && ck_left;
+
+    if(tmp->left){
+        int left = tmp->left->data;
+        if(left >= low && left <= high && left <= data){
+            if(!is_tree_bst(tmp->left, low, data))
+                return false;
+        }else{
+            //std::cout<<"["<<low<<";"<<high<<"] -> left: "<<left<<std::endl;
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -283,39 +294,6 @@ void print_graph_by_levels(iNode* root){
         }
         std::cout<<std::endl;
     }
-}
-
-bool is_graph_balanced(iNode* tmp, int& count){
-    //2 subtrees at same levels are never different in size more than 1
-    int cnt_left = 0, cnt_right = 0;
-    bool ck_left = true, ck_right = true;
-    if(tmp->children.size())
-        ck_left = is_graph_balanced(tmp->children[0], cnt_left);
-    if(tmp->children.size()>1)
-        ck_right = is_graph_balanced(tmp->children[1], cnt_right);
-    if(!ck_left || !ck_right || abs(cnt_left-cnt_right) > 1)
-        return false;
-    count += 1 + cnt_left + cnt_right;
-    return true;
-}
-
-bool is_graph_bst(iNode* tmp, int high){
-    bool ck_left = true, ck_right = true;
-    if(tmp->children.size()){
-        int left = tmp->children[0]->data;
-        if(left > tmp->data){
-            return false;
-        }
-        ck_left = is_graph_bst(tmp->children[0], tmp->data);
-    }
-    if(tmp->children.size() > 1){
-        int right = tmp->children[1]->data;
-        if(right < tmp->data || right > high){
-            return false;
-        }
-        ck_right = is_graph_bst(tmp->children[1], high);
-    }
-    return ck_right && ck_left;
 }
 
 //TODO:
@@ -402,24 +380,6 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> map)
     
     return ordered;
 }
-
-/* int swap(char* a, char* b){
-    char tmp = *b;
-    *b = *a;
-    *a = tmp;
-}
-
-void permute(char* s, int l, int r){
-    if(l==r)
-        printf("%s\n", s); //print entire word
-    else{
-        for(int i=l;i<=r;i++){
-            swap(&s[l], &s[i]);
-            permute(s, l+1, r);
-            swap(&s[l], &s[i]); //backtrack
-        }
-    }
-} */
 
 template<class T>
 void swap(T* a, T* b){

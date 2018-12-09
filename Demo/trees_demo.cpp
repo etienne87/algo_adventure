@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
                 std::cout<<"a & c do not intersect"<<std::endl;
             }
         }
-        if(exo == 2 || exo == 3 || exo == 4 || exo == 5){
+        if(exo == 2 || exo == 3){
             vector<int> array;
             for(int i=0;i<16;i++){
                 array.push_back(rand()%100);
@@ -57,21 +57,67 @@ int main(int argc, char* argv[]){
                 tree[i].data = array[i];
             }
             minimal_tree(tree);
-          
             print_tree_by_levels(&tree[tree.size()/2]);
+        }
+        if(exo == 4){
+            vector<iBTNode> nodes(6);
+            nodes[0].left = &nodes[1];
+            nodes[0].right = 0;
+            nodes[1].left = &nodes[3];
+            nodes[1].right = 0;
+            nodes[2].left = 0;
+            nodes[2].right = 0;
 
-            int cnt = 0;
-            if(is_tree_balanced(&tree[tree.size()/2], cnt)){
+            int depth = 0;
+            if(is_tree_balanced(&nodes[0], depth)){
                 std::cout<<"is balanced!"<<std::endl;
-            } 
+            }else{
+                std::cout<<"not balanced!"<<std::endl;
+            }
 
-            cnt = 0;
-            if(is_tree_bst(&tree[tree.size()/2], 10000)){
+            nodes[0].right = &nodes[2];
+            nodes[1].right = &nodes[4];
+
+            if(is_tree_balanced(&nodes[0], depth)){
+                std::cout<<"is balanced!"<<std::endl;
+            }else{
+                std::cout<<"not balanced!"<<std::endl;
+            }
+        }
+        if(exo == 5){
+            vector<int> array;
+            for(int i=0;i<16;i++){
+                array.push_back(rand()%100);
+            }
+            std::sort(array.begin(), array.end());
+
+            vector<iBTNode> tree;
+            tree.resize(array.size());
+            for(int i=0;i<array.size();i++){
+                tree[i].data = array[i];
+            }
+            minimal_tree(tree);
+            print_tree_by_levels(&tree[tree.size()/2]); 
+
+            /*
+            int example[] = {5,3,7,2,4,6,10,1,4.5};
+            vector<iBTNode> nodes(9);
+            nodes[0].data = 5;
+            nodes[1]
+            nodes[0].left = &nodes[1];
+            nodes[0].right = 0;
+            nodes[1].left = &nodes[3];
+            nodes[1].right = 0;
+            nodes[2].left = 0;
+            nodes[2].right = 0;
+            */
+
+
+            if(is_tree_bst(&tree[tree.size()/2])){
                 std::cout<<"is a binary search tree!"<<std::endl;
             }else{
                 std::cout<<"not a bst"<<std::endl;
-            } 
-
+            }  
         }
 
         if(exo == 6){
@@ -126,13 +172,13 @@ int main(int argc, char* argv[]){
             std::cout<<"num paths: "<<npaths<<std::endl;
         }
 
-        if(exo == 9){
+        /* if(exo == 9){
             std::string test = "ABC";
             permute<char>(&test[0], 0, 2);
 
             auto tree = build_binary_tree(7, true, 32);
             bst_sequence(&tree[0]);
-        }
+        } */
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }
