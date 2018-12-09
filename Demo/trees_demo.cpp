@@ -99,21 +99,35 @@ int main(int argc, char* argv[]){
             minimal_tree(tree);
             print_tree_by_levels(&tree[tree.size()/2]); 
 
-            /*
-            int example[] = {5,3,7,2,4,6,10,1,4.5};
-            vector<iBTNode> nodes(9);
-            nodes[0].data = 5;
-            nodes[1]
-            nodes[0].left = &nodes[1];
-            nodes[0].right = 0;
-            nodes[1].left = &nodes[3];
-            nodes[1].right = 0;
-            nodes[2].left = 0;
-            nodes[2].right = 0;
-            */
-
-
             if(is_tree_bst(&tree[tree.size()/2])){
+                std::cout<<"is a binary search tree!"<<std::endl;
+            }else{
+                std::cout<<"not a bst"<<std::endl;
+            }  
+            
+            //deserialize a tree
+            int example[] = {5,3,7,2,4,6,10,1,4};
+            vector<iBTNode> nodes(9);
+            for(int i=0;i<9;i++)
+                nodes[i].data = example[i];
+            deque<int> queue;
+            queue.push_back(0);
+            while(!queue.empty()){
+                int i = queue.back();
+                queue.pop_back();
+                auto* node = &nodes[i];
+                if((2*i+1)<9){
+                    node->left = &nodes[2*i+1];
+                    queue.push_front(2*i+1);
+                }
+                if((2*i+2)<9){
+                    node->right = &nodes[2*i+2];
+                    queue.push_front(2*i+2);
+                }
+            }
+            print_tree_by_levels(&nodes[0]);
+
+            if(is_tree_bst(&nodes[0])){
                 std::cout<<"is a binary search tree!"<<std::endl;
             }else{
                 std::cout<<"not a bst"<<std::endl;
@@ -172,13 +186,13 @@ int main(int argc, char* argv[]){
             std::cout<<"num paths: "<<npaths<<std::endl;
         }
 
-        /* if(exo == 9){
+        if(exo == 9){
             std::string test = "ABC";
             permute<char>(&test[0], 0, 2);
 
             auto tree = build_binary_tree(7, true, 32);
             bst_sequence(&tree[0]);
-        } */
+        }
     }catch(std::exception& e){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }

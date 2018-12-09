@@ -236,7 +236,6 @@ bool is_tree_balanced(iBTNode* tmp, int& depth){
 }
 
 bool is_tree_bst(iBTNode* tmp, int low=INT_MIN, int high=INT_MAX){
-    //std::cout<<"range: ["<<low<<";"<<high<<"]"<<std::endl;
     int data = tmp->data;
     if(tmp->right){
         int right = tmp->right->data;
@@ -244,7 +243,6 @@ bool is_tree_bst(iBTNode* tmp, int low=INT_MIN, int high=INT_MAX){
             if(!is_tree_bst(tmp->right, data, high))
                 return false;
         }else{
-            //std::cout<<"["<<low<<";"<<high<<"] -> right: "<<right<<std::endl;
             return false;
         }
     }
@@ -255,7 +253,6 @@ bool is_tree_bst(iBTNode* tmp, int low=INT_MIN, int high=INT_MAX){
             if(!is_tree_bst(tmp->left, low, data))
                 return false;
         }else{
-            //std::cout<<"["<<low<<";"<<high<<"] -> left: "<<left<<std::endl;
             return false;
         }
     }
