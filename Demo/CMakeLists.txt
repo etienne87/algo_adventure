@@ -12,7 +12,10 @@ add_executable (ListsDemo lists_demo.cpp)
 add_executable (StacksDemo stacks_demo.cpp)
 add_executable (TreesDemo trees_demo.cpp)
 add_executable (BitwiseDemo bitwise_demo.cpp)
+add_executable (UniqueDemo unique_demo.cpp)
 
+
+target_link_libraries (UniqueDemo LINK_PUBLIC Unique Sort)
 target_link_libraries (SortExoDemo LINK_PUBLIC Sort)
 target_link_libraries (SortDemo LINK_PUBLIC Sort)
 target_link_libraries (ArrayDemo LINK_PUBLIC opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
