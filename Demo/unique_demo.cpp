@@ -9,6 +9,11 @@
 
 using std::vector;
 
+//write to a file results of one method
+void benchmark(){
+
+}
+
 int main(int argc, char* argv[]){
     srand(0);
     std::cout<<"Unique Demo"<<std::endl;
@@ -30,6 +35,8 @@ int main(int argc, char* argv[]){
     vector<int> inv(size);
     std::random_device rd;
     std::mt19937 g(rd());
+    unordered_map<int,int> mmap;
+    mmap.reserve(size);
 
     int nuniq = 0;
     clock_t t = clock();
@@ -41,7 +48,7 @@ int main(int argc, char* argv[]){
             //std::sort(src.begin(),src.end());  
             radixsort(&src[0], src.size());        
         }
-        unique_cpu<int>(&src[0], &inv[0], nuniq, size, sorted);
+        unique_cpu<int>(&src[0], &inv[0], mmap, nuniq, size, sorted);
     }
     t = clock() - t;
     float m_items = (float)size/1000000.0;

@@ -13,7 +13,7 @@ void fill_vector(T* array, int size, T high=100){
 }
 
 template<class T>
-void unique_cpu(T* src, T* inv, int& num_uniques, int size, bool sorted=false){
+void unique_cpu(T* src, T* inv, unordered_map<T,int>& mmap, int& num_uniques, int size, bool sorted){
     num_uniques = 0;
     if(sorted){
         inv[0] = 0;
@@ -24,7 +24,7 @@ void unique_cpu(T* src, T* inv, int& num_uniques, int size, bool sorted=false){
             inv[i] = num_uniques;
         }
     }else{
-        unordered_map<T,int> mmap;
+        mmap.clear();
         for(int i=0;i<size;i++){
             T val = src[i];
             auto it = mmap.find(val);
