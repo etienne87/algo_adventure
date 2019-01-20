@@ -4,7 +4,7 @@
 #include <time.h>
 #include <algorithm>
 #include "bitwise.h"
-
+#include <bitset>
 
 int main(int argc, char* argv[]){
     srand(0);
@@ -19,6 +19,15 @@ int main(int argc, char* argv[]){
         std::cout<<"Error: "<<e.what()<<std::endl;
     }
 
+    if(exo == 0){
+        int N = 0b10111111101;
+        int M = 0b0000010011;
+
+        
+        int R =  insert(N, M, 2, 6);
+        std::cout<<std::bitset<12>(R)<<std::endl;
+
+    }
     
 
 
