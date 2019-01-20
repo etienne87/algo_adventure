@@ -4,6 +4,7 @@
 #include <cstring>
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 #include <list>
 #include <vector>
 #include <deque>
@@ -322,62 +323,6 @@ BTNode<T>* find_common_ancestor(BTNode<T>* a, BTNode<T>* b){
     return NULL;
 }
 
-
-vector<string> build_order(vector<string> vec, vector<pair<string, string>> map){
-    /* some comment here to better understand my own code :
-       1. build a map name: node<string>
-       2. build the graph, find root 
-       (if root is a tail, root become the current head given by list of dependencies)
-       3. parse the graph breadth-first, starting from root with an hash to avoid any duplications.
-    */
-    vector<string> ordered;
-    unordered_map<string, sNode> nodes;
-    for(auto val: vec){
-        auto a = sNode(val);
-        nodes.insert(pair<string, sNode>(val, a));
-    }
-    sNode* root = NULL;
-    for(auto val: map){
-        string a = val.first;
-        string b = val.second;
-        
-        auto node1 = &nodes.find(a)->second;
-        auto node2 = &nodes.find(b)->second;
-        node1->children.push_back(node2);
-        
-        if(root == NULL || root == node2){
-            root = node1;
-        }
-    }  
-    //NOW: BFS
-    deque<sNode*> queue;
-    queue.push_back(root);
-    
-    unordered_set<string> inside;
-    
-    while(!queue.empty()){
-        sNode* node = queue.front();
-
-        if( inside.find(node->data) == inside.end()){
-            inside.insert(node->data);
-            ordered.push_back(node->data);
-        }
-
-        queue.pop_front();
-        for(auto val: node->children){
-            queue.push_back(val);
-        }
-    }
-    for(auto val: vec){
-        if( inside.find(val) == inside.end()){
-            ordered.push_back(val);
-        }
-    }
-    
-    
-    return ordered;
-}
-
 template<class T>
 void swap(T* a, T* b){
     T tmp = *b;
@@ -570,4 +515,49 @@ int count_paths_sum(iNode* root, int partial_sum, int ref_sum){
         num_paths += count_paths_sum(child, partial_sum, ref_sum);
 
     return num_paths;
+}
+
+
+int helper_find_deepest(std::unordered_multimap<string, string>& map, std::string& key, int depth=0){
+
+    if(map.find(key) == map.end()){
+        return depth;
+    }else{
+        auto range = map.equal_range(key);
+        int max_depth = 0;
+        depth += 1;
+        for (auto it = range.first; it != range.second; ++it) {
+            if(it->second == "")//"" does counts as void
+                continue;
+            int tmp = helper_find_deepest(map, it->second, depth);    
+            max_depth = std::max<int>(max_depth, tmp);
+        }
+        return max_depth;
+    }
+}
+
+vector<string> build_order(vector<string> vec, vector<pair<string, string>> dependencies){
+    /* just sort by priority = deepest traversal from node to leaf.
+        
+    */
+    //1. make a map
+    std::unordered_multimap<string, string> map;
+    for(auto val: dependencies){
+        map.insert(val);
+    }
+
+    vector<string> ordered;
+    vector<pair<int, string>> priorities; 
+
+    for(auto key: vec){
+        int priority = helper_find_deepest(map, key);
+        priorities.push_back(pair<int, string>(-priority, key));
+    }
+
+    std::sort(priorities.begin(), priorities.end());
+    for(auto it: priorities){
+        ordered.push_back(it.second);
+    } 
+    
+    return ordered;
 }

@@ -17,9 +17,9 @@ void benchmark(){
 int main(int argc, char* argv[]){
     srand(0);
     std::cout<<"Unique Demo"<<std::endl;
-    int size = 1e8;
+    int size = 1e7;
     int high = 640*480;
-    int rounds = 10;
+    int rounds = 1;
     bool sorted = false;
     if(argc > 1)
         size = atoi(argv[1]);

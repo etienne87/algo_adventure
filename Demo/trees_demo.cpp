@@ -13,6 +13,17 @@ int main(int argc, char* argv[]){
     if(argc > 1)
         exo = atoi(argv[1]);
 
+    /* std::unordered_multimap<string, string> map;
+    map.insert(std::make_pair("a", "b")); 
+    map.insert(std::make_pair("a", "c")); 
+    map.insert(std::make_pair("a", "d")); 
+
+    //test equal range
+    auto range = map.equal_range("a");
+    for (auto it = range.first; it != range.second; ++it) {
+        std::cout<<it->first<<" "<<it->second<<std::endl;
+    } */
+
     try{
         if(exo == 0){
             auto tree = build_binary_tree();
@@ -136,21 +147,52 @@ int main(int argc, char* argv[]){
 
         if(exo == 6){
             vector<string> projects;
+            vector<pair<string, string>> dependencies;
+            /* projects.push_back("a");
+            projects.push_back("b");
+            projects.push_back("c");
+            projects.push_back("d");
+            projects.push_back("e");
+            projects.push_back("f");
+            dependencies.push_back(std::make_pair("a","d"));
+            dependencies.push_back(std::make_pair("f","b"));
+            dependencies.push_back(std::make_pair("b","d"));
+            dependencies.push_back(std::make_pair("f","a"));
+            dependencies.push_back(std::make_pair("d","c")); 
+            dependencies.push_back(std::make_pair("e",""));  */
+
             projects.push_back("a");
             projects.push_back("b");
             projects.push_back("c");
             projects.push_back("d");
             projects.push_back("e");
             projects.push_back("f");
-            vector<pair<string, string>> dependencies;
-            dependencies.push_back(pair<string,string>("a","d"));
-            dependencies.push_back(pair<string,string>("f","b"));
-            dependencies.push_back(pair<string,string>("b","d"));
-            dependencies.push_back(pair<string,string>("f","a"));
-            dependencies.push_back(pair<string,string>("d","c")); 
-            dependencies.push_back(pair<string,string>("e","")); 
+            projects.push_back("g");
+            projects.push_back("h");
+            projects.push_back("i");
+            projects.push_back("j");
+            projects.push_back("k");
+            projects.push_back("l");
+            projects.push_back("m");
+            dependencies.push_back(std::make_pair("a","d"));
+            dependencies.push_back(std::make_pair("b","d"));
+            dependencies.push_back(std::make_pair("e","g"));
+            dependencies.push_back(std::make_pair("f","g"));
 
+            dependencies.push_back(std::make_pair("d","h"));
+            dependencies.push_back(std::make_pair("g","h"));
+            dependencies.push_back(std::make_pair("h","l"));
+            dependencies.push_back(std::make_pair("h","i"));
+            dependencies.push_back(std::make_pair("i","k"));
+            dependencies.push_back(std::make_pair("i","j"));
+            dependencies.push_back(std::make_pair("j","m"));
+            
+
+
+            std::cout<<"build order!"<<std::endl;
             auto res = build_order(projects, dependencies);
+
+        
 
             for(auto val: res){
                 std::cout<<val<<" ";
