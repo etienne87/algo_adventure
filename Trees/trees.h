@@ -237,27 +237,11 @@ bool is_tree_balanced(iBTNode* tmp, int& depth){
 }
 
 bool is_tree_bst(iBTNode* tmp, int low=INT_MIN, int high=INT_MAX){
+    if(!tmp)return true;
     int data = tmp->data;
-    if(tmp->right){
-        int right = tmp->right->data;
-        if(right >= low && right <= high && right >= data){
-            if(!is_tree_bst(tmp->right, data, high))
-                return false;
-        }else{
-            return false;
-        }
-    }
-
-    if(tmp->left){
-        int left = tmp->left->data;
-        if(left >= low && left <= high && left <= data){
-            if(!is_tree_bst(tmp->left, low, data))
-                return false;
-        }else{
-            return false;
-        }
-    }
-    return true;
+    if( tmp->data < low || tmp->data > high)return false;
+    return is_tree_bst(tmp->right, data, high) &&
+           is_tree_bst(tmp->left, low, data); 
 }
 
 
@@ -518,19 +502,28 @@ int count_paths_sum(iNode* root, int partial_sum, int ref_sum){
 }
 
 
-int helper_find_deepest(std::unordered_multimap<string, string>& map, std::string& key, int depth=0){
+int helper_find_deepest(std::unordered_multimap<string, string>& map, 
+                        std::string& root_key,
+                        std::string& key, 
+                        std::unordered_map<string, int>& visited, //memoization
+                        int depth=0){
 
     if(map.find(key) == map.end()){
         return depth;
     }else{
+        auto jt = visited.find(key);
+        if(jt != visited.end()){
+            //std::cout<<"shortcut taken"<<std::endl;
+            return jt->second + 1;    
+        }
         auto range = map.equal_range(key);
         int max_depth = 0;
         depth += 1;
         for (auto it = range.first; it != range.second; ++it) {
             if(it->second == "")//"" does counts as void
                 continue;
-            int tmp = helper_find_deepest(map, it->second, depth);    
-            max_depth = std::max<int>(max_depth, tmp);
+            int count = helper_find_deepest(map, root_key, it->second, visited, depth);    
+            max_depth = std::max<int>(max_depth, count);
         }
         return max_depth;
     }
@@ -549,8 +542,11 @@ vector<string> build_order(vector<string> vec, vector<pair<string, string>> depe
     vector<string> ordered;
     vector<pair<int, string>> priorities; 
 
+    std::unordered_map<string, int> visited;
     for(auto key: vec){
-        int priority = helper_find_deepest(map, key);
+        int priority = helper_find_deepest(map, key, key, visited);
+        visited[key] = priority;
+        std::cout<<key<<": "<<priority<<std::endl;
         priorities.push_back(pair<int, string>(-priority, key));
     }
 

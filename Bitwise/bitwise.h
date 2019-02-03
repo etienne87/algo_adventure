@@ -69,3 +69,8 @@ int pairwise_swap(int N){
     int odd_even = ((N & mask_even)>>1)&mask_odd;
     return odd_part | odd_even;
 }
+
+int flip_to_biggest(int N){
+    int R = N;
+    return R;
+}

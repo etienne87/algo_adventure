@@ -161,19 +161,26 @@ int main(int argc, char* argv[]){
             dependencies.push_back(std::make_pair("d","c")); 
             dependencies.push_back(std::make_pair("e",""));  */
 
-            projects.push_back("a");
-            projects.push_back("b");
+
+            projects.push_back("k");
+            projects.push_back("m");
+
+            projects.push_back("l");
+            
+            
             projects.push_back("c");
             projects.push_back("d");
-            projects.push_back("e");
-            projects.push_back("f");
+            
+            
             projects.push_back("g");
             projects.push_back("h");
             projects.push_back("i");
             projects.push_back("j");
-            projects.push_back("k");
-            projects.push_back("l");
-            projects.push_back("m");
+            projects.push_back("a");
+            projects.push_back("b");
+            projects.push_back("f");
+            projects.push_back("e");
+            
             dependencies.push_back(std::make_pair("a","d"));
             dependencies.push_back(std::make_pair("b","d"));
             dependencies.push_back(std::make_pair("e","g"));
