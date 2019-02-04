@@ -36,6 +36,47 @@ int main(int argc, char* argv[]){
                 std::cout<<jt<<" ";
             std::cout<<std::endl;
         }
+    }
+    if(exo == 2){
+        vector<int> array(100);
+        array[0] = 1;
+        for(int i=1;i<100;i++){
+            if(i > array[i-1] && array[i-1] != i-1)
+                array[i] = i;
+            else
+                array[i] = array[i-1] + rand()%2 + 1; // assures distinct numbers
+        }
 
+        for(auto it: array)
+            std::cout<<it<<" ";
+        std::cout<<std::endl;
+
+        int i = magic_index(array);
+        std::cout<<"magic index: "<<i<<" "<<array[i]<<std::endl;
+    }
+    if(exo == 3){
+        vector<int> array(5);
+        for(int i=0;i<array.size();i++){
+            array[i] = i;
+        }
+        auto subsets = power_set(array);
+        int gtsize = 1<<5;
+        std::cout<<"num subsets: "<<subsets.size()<< " "<<gtsize<<std::endl;
+        for(auto subset: subsets){
+            for(auto item: subset){
+                std::cout<<item<<" ";
+            }
+            std::cout<<std::endl;
+        }
+    }
+    if(exo == 4){
+        stack<int> s1, s2, s3;
+        int n = 20;
+        for(int i=0;i<n;i++)
+            s1.push(i);
+        move_n_items(s1, s3, s2, n);
+        for(int i=0;i<n;i++){
+            std::cout<<pop(s3)<<std::endl;
+        }
     }
 }
