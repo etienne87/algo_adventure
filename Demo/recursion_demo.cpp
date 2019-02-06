@@ -79,4 +79,8 @@ int main(int argc, char* argv[]){
             std::cout<<pop(s3)<<std::endl;
         }
     }
+    if(exo == 5){
+        string chars = "abcd";
+        permute_wo_dups(chars);
+    }
 }

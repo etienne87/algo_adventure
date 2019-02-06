@@ -1,12 +1,16 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <queue>
+#include <set>
 
 using std::string;
 using std::vector;
 using std::stack;
+using std::queue;
 using std::pair;
 using std::make_pair;
+using std::set;
 
 int climb_stairs(int n, vector<int>& ways){
     vector<int> memo(n, 0);
@@ -117,4 +121,38 @@ void move_n_items(stack<int>& src, stack<int>& dst, stack<int>& tmp, int n){
         dst.push(pop(src));//move nth item to dst
         move_n_items(tmp, dst, src, n-1); //put back n-1 items to dst from tmp.
     }
+}
+
+template<class T>
+T popq(queue<T>& q){
+    T item = q.front();
+    q.pop();
+    return item;
+}
+
+void permute_wo_dups(string& chars){
+    queue<string> perm;
+    string tmp = chars.substr(0,1);
+    perm.push(tmp);
+
+    for(int i=1;i<chars.size();i++){        
+        int num = perm.size();
+        for(int j=0;j<num;j++){
+            string base = popq(perm);
+            for(int k=0;k<base.size()+1;k++){
+                tmp = base.substr(0,k) + chars[i] + base.substr(k, base.size());
+                perm.push(tmp);
+            } 
+        }
+    }
+    
+    //print all solutions...or return them
+    int i = 0;
+    while(!perm.empty()){
+        std::cout<<i++<<" "<<popq(perm)<<std::endl;
+    }
+}
+
+void permute_w_dups(string& chars){
+    
 }
