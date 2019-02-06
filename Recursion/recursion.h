@@ -12,6 +12,7 @@ using std::pair;
 using std::make_pair;
 using std::set;
 
+
 int climb_stairs(int n, vector<int>& ways){
     vector<int> memo(n, 0);
     memo[0] = 1;
@@ -154,5 +155,35 @@ void permute_wo_dups(string& chars){
 }
 
 void permute_w_dups(string& chars){
-    
+    //TODO
+}
+
+
+void print_parens(int n, int nbits){
+    int nopen = 0;
+    for(int i=0;i<nbits;i++){
+        int bit = (n & (1<<(nbits - 1 - i))) > 0;
+        
+        if(bit){
+            nopen++;
+            std::cout<<"(";
+        }else{
+            if(nopen>0){
+                std::cout<<")";
+                nopen--;
+            }
+            std::cout<<",()";
+        } 
+    }
+    for(int i=0;i<nopen;i++){
+        std::cout<<")";
+    }
+    std::cout<<std::endl;
+}
+
+void parens(int n){
+    int max = 1<<n; //2^n options
+    for(int i=0;i<max;i++){
+        print_parens(i, n);
+    }
 }

@@ -83,4 +83,11 @@ int main(int argc, char* argv[]){
         string chars = "abcd";
         permute_wo_dups(chars);
     }
+    if(exo == 7){
+        for(int i=0;i<8;i++){
+            std::cout<<i<<": ";
+            print_parens(i, 3);
+        }
+       
+    }
 }
