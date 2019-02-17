@@ -322,6 +322,40 @@ int stack_of_boxes(vector<dims>& whd, vector<vector<int>>& memo, int n=0, int he
     return max_height;
 }
 
-int count_eval(string& expression, bool result){
-    return 0;
+int count_eval(string& expr, bool result, unordered_map<string,int>& hash){
+    if(expr.size() == 1){
+        bool res = (bool)std::stoi(expr);
+        return res == result;
+    }
+    int count = 0;
+    for(int i=0;i<expr.size()-2;i+=2){
+        string sub = expr.substr(i, 3);
+        
+        int v1 = std::stoi(sub.substr(0,1));
+        char op = sub[1];
+        int v2 = std::stoi(sub.substr(2,1));
+        int v3 = 0; 
+
+        if(op == '^')
+            v3 = v1^v2;
+        if(op == '|')
+            v3 = v1|v2;
+        if(op == '&')
+            v3 = v1&v2;
+
+        string reduced = expr.substr(0, i) + std::to_string(v3) + expr.substr(i+3, expr.size()-i-3);
+        //std::cout<<reduced<<std::endl;
+        int c = 0;
+        if(hash.find(reduced) == hash.end()){
+            c = count_eval(reduced, result, hash);
+            if(c == 1){
+                std::cout<<reduced<<std::endl;
+            } 
+            hash.insert(make_pair(reduced, c));
+        }else{
+            c = hash.find(reduced)->second;
+        }
+        count += c;
+    }
+    return count;
 }

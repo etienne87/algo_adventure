@@ -170,7 +170,13 @@ int main(int argc, char* argv[]){
     }
     if(exo == 12){
         std::cout<<"Boolean Expression"<<std::endl;
-        int a = count_eval("l /\ 01011", false);
-        int b = count_eval("0&0&0&1 /\ ll0", true);
+        string expr1 = "1^0|0|1";
+        string expr2 = "0&0&0&1^1|0";
+        unordered_map<string, int> hash;
+        //int a = count_eval(expr1, false, hash);
+        //hash.clear();
+        int b = count_eval(expr2, true, hash);
+        //std::cout<<"expr1: "<<expr1<<": " <<a<<" ways"<<std::endl;
+        std::cout<<"expr2: "<<expr2<<": " <<b<<" ways"<<std::endl;
     }
 }
