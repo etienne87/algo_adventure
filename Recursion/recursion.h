@@ -3,6 +3,9 @@
 #include <stack>
 #include <queue>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <tuple>
 
 using std::string;
 using std::vector;
@@ -10,7 +13,11 @@ using std::stack;
 using std::queue;
 using std::pair;
 using std::make_pair;
+using std::make_tuple;
 using std::set;
+using std::unordered_map;
+using std::unordered_set;
+using std::tuple;
 
 
 int climb_stairs(int n, vector<int>& ways){
@@ -131,18 +138,26 @@ T popq(queue<T>& q){
     return item;
 }
 
-void permute_wo_dups(string& chars){
+void permute_dups(string& chars, bool use_set){
     queue<string> perm;
     string tmp = chars.substr(0,1);
     perm.push(tmp);
 
     for(int i=1;i<chars.size();i++){        
         int num = perm.size();
+
+        unordered_set<string> set;
         for(int j=0;j<num;j++){
             string base = popq(perm);
             for(int k=0;k<base.size()+1;k++){
                 tmp = base.substr(0,k) + chars[i] + base.substr(k, base.size());
-                perm.push(tmp);
+                if(use_set){
+                    if(set.find(tmp) == set.end()){
+                        perm.push(tmp);
+                        set.insert(tmp);
+                    }
+                }else
+                    perm.push(tmp);
             } 
         }
     }
@@ -154,36 +169,159 @@ void permute_wo_dups(string& chars){
     }
 }
 
-void permute_w_dups(string& chars){
-    //TODO
+void parens(int npairs, string word="()"){
+    if(npairs == 0){
+        std::cout<<word<<std::endl;
+        return;
+    }
+    //3 choices: (<solution>)| (),<solution> | <solution>,()
+    string tmp = "(" + word + ")";
+    parens(npairs-1, tmp);
+
+    tmp = "()," + word;
+    parens(npairs-1, tmp);
+    
+    tmp = word + ",()";
+    parens(npairs-1, tmp);
+}
+
+typedef pair<int,int> point2d;
+typedef tuple<int,int,int> color;
+
+int get_group(unordered_map<int,int>& map, int src){
+    auto it = map.find(src);
+    while(it != map.end()){
+        src = it->second;
+        it = map.find(src);
+    }
+    return src;
+}
+
+void fill_update(vector<vector<int>>& groups, point2d& pt, color& new_color, 
+                     unordered_map<int,int>& map,
+                     vector<color>& colormaps){
+    int height = groups.size();
+    int width = groups[0].size();
+    int ptx = pt.first;
+    int pty = pt.second;
+    int src = get_group(map, groups[pty][ptx]);
+    for(int y=pty-1;y<pty+2;y++){
+        if(y < 0 || y >= height)
+            continue;
+        for(int x=ptx-1;x<ptx+2;x++){
+            if(x < 0 || x >= width)
+                continue;
+            if(x == ptx && pty == pty)
+                continue;
+            int dst = get_group(map, groups[y][x]);
+            if(dst != src){
+                if(colormaps[dst] == new_color){
+                    map.insert(make_pair(src, dst)); // src now points to dst
+                    src = dst;
+                }
+                
+            }
+        }
+    }
+}
+
+int64_t makechange(int n, vector<int>& coins, int index){
+    if(index >= 3)
+        return 1;
+    int coin = coins[index];
+    int64_t count = 0;
+    
+    for(int i=0;i<n;i+=coin){
+        count += makechange(n - i, coins, index+1);
+    }
+    return count;
 }
 
 
-void print_parens(int n, int nbits){
-    int nopen = 0;
-    for(int i=0;i<nbits;i++){
-        int bit = (n & (1<<(nbits - 1 - i))) > 0;
-        
-        if(bit){
-            nopen++;
-            std::cout<<"(";
-        }else{
-            if(nopen>0){
-                std::cout<<")";
-                nopen--;
-            }
-            std::cout<<",()";
-        } 
-    }
-    for(int i=0;i<nopen;i++){
-        std::cout<<")";
+
+void print_board(vector<int>& board){
+    vector<vector<int>> hash(board.size());
+    for(int i=0;i<board.size();i++)
+        hash[i] = vector<int>(board.size(), 0);
+    for(int y=0;y<board.size();y++){
+        int x = board[y];
+        hash[y][x] = 1;
+    } 
+    for(int y=0;y<board.size();y++){
+        for(int x=0;x<board.size();x++)
+            std::cout<<hash[y][x]<<" ";
+        std::cout<<std::endl;
     }
     std::cout<<std::endl;
 }
 
-void parens(int n){
-    int max = 1<<n; //2^n options
-    for(int i=0;i<max;i++){
-        print_parens(i, n);
+bool is_valid(vector<int>& board){
+    int curr_row = board.size()-1;
+    int curr_col = board.back();
+    for(int row=0;row<board.size()-1;row++){
+        int col = board[row];
+        int diffcol = std::abs(curr_col-col);
+        int diffrow = std::abs(curr_row-row);
+        if(diffcol == 0 || diffrow == 0 || diffcol == diffrow)
+            return false;
     }
+    return true;
+}
+
+void nqueens(int n, vector<int>& board){
+    if(n == board.size()){
+        print_board(board);
+    }
+    for(int col=0;col<n;col++){
+        board.push_back(col);
+        if(is_valid(board)){
+            nqueens(n, board);
+        }
+        board.pop_back();
+    }
+} 
+typedef tuple<int,int,int> dims;
+
+int stack_of_boxes(vector<dims>& whd, vector<vector<int>>& memo, int n=0, int height=0){
+    //allocate memo array
+    if(memo.size()==0){
+        int total_height = 0;
+        for(int i=0;i<whd.size();i++){
+            total_height += std::get<1>(whd[i]);
+        }
+        memo.resize(whd.size());
+        for(int i=0;i<whd.size();i++)
+            memo[i].resize(total_height, 0);
+    }
+    if(n == whd.size()){
+        return height;
+    }
+    int pw=0, ph=0, pd=0;
+    if(n > 0){
+        pw = std::get<0>(whd[n-1]);
+        ph = std::get<1>(whd[n-1]);
+        pd = std::get<2>(whd[n-1]);
+    }
+    
+    int max_height = height;
+    int curr_height = 0;
+    for(int i=n;i<whd.size();i++){
+        int w = std::get<0>(whd[i]);
+        int h = std::get<1>(whd[i]);
+        int d = std::get<2>(whd[i]);
+        if(n == 0 || (w < pw && h < ph && d < pd)){
+            if(memo[i][h] > 0){
+                curr_height = memo[i][h];
+            }else{
+                curr_height = stack_of_boxes(whd, memo, i+1, height + h);
+                memo[i][h] = curr_height;
+            }
+            max_height = std::max(max_height, curr_height);
+        } 
+    } 
+    return max_height;
+}
+
+int count_eval(string& expression, bool result){
+    return 0;
 }
